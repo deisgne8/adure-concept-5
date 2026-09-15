@@ -87,7 +87,7 @@ h1,h2,h3,h4,.svc-word,.hero-caption span,.facts b,.stats dd,.intent span{font-fa
 .page-intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:
   radial-gradient(70% 50% at 50% 48%,color-mix(in srgb,var(--cyan) 20%,var(--white)),transparent 72%),
   linear-gradient(180deg,var(--sky-top),var(--sky-mid));overflow:hidden;will-change:clip-path,opacity}
-.intro-logo-fill{height:min(58vh,560px);aspect-ratio:84/92;background:url("../assets/video/saadiyat-day-poster.webp") center/cover no-repeat;-webkit-mask:url("../assets/logo/emblem-mask.svg") center/contain no-repeat;mask:url("../assets/logo/emblem-mask.svg") center/contain no-repeat;filter:saturate(.72) contrast(.92);will-change:transform,opacity}
+.intro-logo-fill{height:min(58vh,560px);aspect-ratio:84/92;background:url("../assets/logo/adure-emblem.svg") center/contain no-repeat;will-change:transform,opacity}
 .hero{position:relative;height:100vh;height:100svh;min-height:620px}
 .hero-stage{position:absolute;inset:0;overflow:hidden;background:var(--haze)}
 .hero-sky{position:absolute;inset:0;background:
@@ -109,6 +109,7 @@ h1,h2,h3,h4,.svc-word,.hero-caption span,.facts b,.stats dd,.intent span{font-fa
   linear-gradient(180deg,rgba(240,244,248,0) 0%,rgba(240,244,248,.75) 55%,var(--haze) 88%)}
 .hero-lines{position:fixed;left:50%;top:50%;height:min(60vh,580px);aspect-ratio:87/95;transform:translate(-50%,-50%);z-index:101;pointer-events:none;display:none}
 .hero-lines svg{width:100%;height:100%}
+.hero-lines .ln{stroke:var(--navy);stroke-width:.45}
 .hero-window{position:absolute;inset:0;z-index:6;pointer-events:none;display:none}
 .hero-window video{width:100%;height:100%;object-fit:cover}
 .hero-caption{position:absolute;left:0;right:0;bottom:7vh;text-align:center;z-index:7;display:none;color:var(--navy)}

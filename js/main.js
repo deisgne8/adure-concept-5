@@ -120,8 +120,8 @@
   var copy = hero.querySelector("[data-hero-copy]");
   var subs = hero.querySelectorAll("[data-hero-sub]");
   var building = hero.querySelector("[data-hero-building]");
-  var linesWrap = hero.querySelector("[data-hero-lines]");
-  var lines = hero.querySelectorAll(".ln");
+  var linesWrap = document.querySelector("[data-hero-lines]");
+  var lines = linesWrap.querySelectorAll(".ln");
   var win = hero.querySelector("[data-hero-window]");
   var video = hero.querySelector("[data-hero-video]");
   var caption = hero.querySelector("[data-hero-caption]");
@@ -151,12 +151,14 @@
         ScrollTrigger.refresh();
       }
     })
-      .to(lines, { strokeDashoffset: 0, duration: 1.05, stagger: 0.045, ease: "power1.inOut" })
-      .to(introFill, { autoAlpha: 1, scale: 1, duration: 0.72 }, 0.62)
-      .to(lines, { autoAlpha: 0, duration: 0.32 }, 1.2)
-      .to(introFill, { scale: 1.08, duration: 0.75, ease: "power2.inOut" }, 1.25)
-      .to(intro, { clipPath: "inset(0 0 100% 0)", duration: 0.82, ease: "power3.inOut" }, 1.65)
-      .to(header, { autoAlpha: 1, duration: 0.55 }, 1.72);
+      .to(lines, { strokeDashoffset: 0, duration: 1.1, stagger: 0.055, ease: "power1.inOut" })
+      .to({}, { duration: 0.38 })
+      .to(introFill, { autoAlpha: 1, scale: 1, duration: 0.68 }, ">")
+      .to(lines, { autoAlpha: 0, duration: 0.4 }, "<0.12")
+      .to({}, { duration: 0.58 })
+      .to(introFill, { scale: 1.05, duration: 0.55, ease: "power2.inOut" })
+      .to(intro, { clipPath: "inset(0 0 100% 0)", duration: 0.82, ease: "power3.inOut" }, "<0.18")
+      .to(header, { autoAlpha: 1, duration: 0.55 }, "<0.08");
   } else {
     if (intro) intro.remove();
     gsap.set(linesWrap, { display: "none" });
