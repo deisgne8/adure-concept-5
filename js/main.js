@@ -12,8 +12,10 @@
   var heroHaze = hero.querySelector(".hero-haze");
   var eyebrow = hero.querySelector(".hero-eyebrow");
   var title = hero.querySelector(".hero-title");
+  var titleLines = Array.prototype.slice.call(title.querySelectorAll(".line"));
   var heroSub = hero.querySelector(".hero-sub");
   var heroCta = hero.querySelector(".hero-cta");
+  var heroCtas = Array.prototype.slice.call(heroCta.querySelectorAll(".btn"));
   var scrollCue = hero.querySelector(".scroll-cue");
   var linesWrap = document.querySelector("[data-hero-lines]");
   var lines = linesWrap ? Array.prototype.slice.call(linesWrap.querySelectorAll(".ln")) : [];
@@ -200,7 +202,7 @@
     doc.classList.remove("intro-active");
     lenis.start();
     gsap.set(linesWrap, { display: "none", clearProps: "opacity,visibility,transform" });
-    gsap.set([header, eyebrow, title, heroSub, heroCta, building, heroHaze, scrollCue], {
+    gsap.set([header, eyebrow, title, heroSub, heroCta, building, heroHaze, scrollCue].concat(titleLines, heroCtas), {
       clearProps: "opacity,visibility,transform"
     });
     gsap.set([portalBuilding, expansionBuilding], { clearProps: "transform,willChange" });
@@ -222,13 +224,13 @@
     resetLines();
 
     var mobile = window.innerWidth <= 900;
-    var initialSize = mobile ? Math.min(window.innerWidth * 0.68, 280) : Math.min(window.innerHeight * 0.56, 460);
     var endSize = Math.hypot(window.innerWidth, window.innerHeight) * 2.25;
     var outerLines = lines.slice(0, 2);
     var innerLines = lines.slice(2);
 
     gsap.set(intro, { display: "grid", autoAlpha: 1 });
     gsap.set(linesWrap, { display: "block", autoAlpha: 1, scale: 1 });
+    var initialSize = linesWrap.getBoundingClientRect().width;
     gsap.set(lines, { autoAlpha: 1 });
     gsap.set(portal, {
       autoAlpha: 0,
@@ -238,14 +240,14 @@
     gsap.set(expansion, { autoAlpha: 0, clipPath: "circle(0 at 50% 50%)" });
     gsap.set([portalBuilding, expansionBuilding], {
       y: -window.innerHeight * (mobile ? 0.16 : 0.24),
-      scale: 1.08,
+      scale: 1.06,
       transformOrigin: "50% 58%"
     });
     gsap.set(header, { autoAlpha: 0, y: -12 });
     gsap.set(eyebrow, { autoAlpha: 0, y: 14 });
-    gsap.set(title, { autoAlpha: 0, y: 24 });
+    gsap.set(titleLines, { autoAlpha: 0, y: 24 });
     gsap.set(heroSub, { autoAlpha: 0, y: 18 });
-    gsap.set(heroCta, { autoAlpha: 0, y: 16 });
+    gsap.set(heroCtas, { autoAlpha: 0, y: 16 });
     gsap.set([building, heroHaze], { autoAlpha: 0 });
     gsap.set(scrollCue, { autoAlpha: 0, y: 12 });
 
@@ -257,35 +259,36 @@
     if (debugIntro) window.__introTimeline = introTimeline;
 
     introTimeline
-      .to({}, { duration: 0.28 })
-      .addLabel("draw", 0.28)
-      .to(outerLines, { strokeDashoffset: 0, duration: 0.96, stagger: 0.12, ease: "power2.inOut" }, "draw")
-      .to(innerLines, { strokeDashoffset: 0, duration: 0.86, stagger: 0.052, ease: "power3.inOut" }, "draw+=0.26")
-      .to(portal, { autoAlpha: 1, duration: 0.74, ease: "power2.out" }, "draw+=0.5")
-      .to([portalBuilding, expansionBuilding], { scale: 1.03, duration: 1.42, ease: "power3.out" }, "draw+=0.46")
-      .addLabel("hold", 1.82)
-      .to({}, { duration: 0.42 }, "hold")
-      .addLabel("open", 2.24)
+      .to({}, { duration: 0.2 })
+      .addLabel("draw", 0.2)
+      .to(outerLines, { strokeDashoffset: 0, duration: 0.92, stagger: 0.11, ease: "power2.inOut" }, "draw")
+      .to(innerLines, { strokeDashoffset: 0, duration: 0.84, stagger: 0.05, ease: "power3.inOut" }, "draw+=0.24")
+      .to(portal, { autoAlpha: 1, duration: 0.72, ease: "power2.out" }, "draw+=0.48")
+      .to([portalBuilding, expansionBuilding], { scale: 1.02, duration: 1.36, ease: "power3.out" }, "draw+=0.44")
+      .addLabel("emblemComplete", 1.7)
+      .to({}, { duration: 0.55 }, "emblemComplete")
+      .addLabel("open", 2.25)
       .set(expansion, { autoAlpha: 1, clipPath: "circle(10vmin at 50% 50%)" }, "open")
-      .to(expansion, { clipPath: "circle(120vmax at 50% 50%)", duration: 1.46, ease: "power4.inOut" }, "open")
-      .to([portalBuilding, expansionBuilding], { y: 0, scale: 1, duration: 1.46, ease: "power4.inOut" }, "open")
+      .to(expansion, { clipPath: "circle(120vmax at 50% 50%)", duration: 1.25, ease: "power4.inOut" }, "open")
+      .to([portalBuilding, expansionBuilding], { y: 0, scale: 1, duration: 1.25, ease: "power4.inOut" }, "open")
       .to(portal, {
         webkitMaskSize: endSize + "px auto",
         maskSize: endSize + "px auto",
-        duration: 1.38,
+        duration: 1.2,
         ease: "power4.inOut"
       }, "open")
-      .to(linesWrap, { scale: mobile ? 6.5 : 5.6, autoAlpha: 0, duration: 1.24, ease: "power4.in" }, "open")
-      .to(portal, { autoAlpha: 0, duration: 0.5, ease: "power2.out" }, "open+=0.58")
-      .to(header, { autoAlpha: 1, y: 0, duration: 0.58, ease: "power3.out" }, "open+=0.72")
-      .to(eyebrow, { autoAlpha: 1, y: 0, duration: 0.52, ease: "power3.out" }, "open+=0.84")
-      .to(title, { autoAlpha: 1, y: 0, duration: 0.66, ease: "power3.out" }, "open+=0.96")
-      .to(heroSub, { autoAlpha: 1, y: 0, duration: 0.54, ease: "power3.out" }, "open+=1.08")
-      .to(heroCta, { autoAlpha: 1, y: 0, duration: 0.54, ease: "power3.out" }, "open+=1.2")
-      .set([building, heroHaze], { autoAlpha: 1 }, "open+=1.32")
-      .to(scrollCue, { autoAlpha: 1, y: 0, duration: 0.44, ease: "power3.out" }, "open+=1.36")
-      .to(expansion, { autoAlpha: 0, duration: 0.52, ease: "power2.out" }, "open+=1.38")
-      .to(intro, { autoAlpha: 0, duration: 0.18, ease: "none" }, "open+=1.72");
+      .to(linesWrap, { scale: mobile ? 8 : 8.5, autoAlpha: 0, duration: 1.12, ease: "power4.in" }, "open")
+      .to(portal, { autoAlpha: 0, duration: 0.45, ease: "power2.out" }, "open+=0.7")
+      .set([building, heroHaze], { autoAlpha: 1 }, "open+=1.13")
+      .to(expansion, { autoAlpha: 0, duration: 0.2, ease: "none" }, "open+=1.2")
+      .to(intro, { autoAlpha: 0, duration: 0.15, ease: "none" }, "open+=1.3")
+      .addLabel("heroVisible", 3.7)
+      .to(header, { autoAlpha: 1, y: 0, duration: 0.45, ease: "power3.out" }, "heroVisible+=0.2")
+      .to(eyebrow, { autoAlpha: 1, y: 0, duration: 0.45, ease: "power3.out" }, "heroVisible+=0.35")
+      .to(titleLines, { autoAlpha: 1, y: 0, duration: 0.62, stagger: 0.07, ease: "power3.out" }, "heroVisible+=0.52")
+      .to(heroSub, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power3.out" }, "heroVisible+=0.75")
+      .to(heroCtas, { autoAlpha: 1, y: 0, duration: 0.48, stagger: 0.12, ease: "power3.out" }, "heroVisible+=0.92")
+      .to(scrollCue, { autoAlpha: 1, y: 0, duration: 0.4, ease: "power3.out" }, "heroVisible+=1.3");
 
     introTimeline.timeScale(introSlow ? 0.5 : 1).play(0);
   }
