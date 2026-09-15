@@ -84,15 +84,21 @@ h1,h2,h3,h4,.svc-word,.hero-caption span,.facts b,.stats dd,.intent span{font-fa
 
 /* 01 hero */
 .intro-active{overflow:hidden}
-.page-intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:
-  radial-gradient(70% 50% at 50% 48%,color-mix(in srgb,var(--cyan) 20%,var(--white)),transparent 72%),
-  linear-gradient(180deg,var(--sky-top),var(--sky-mid));overflow:hidden;will-change:clip-path,opacity}
-.intro-logo-fill{height:min(58vh,560px);aspect-ratio:84/92;background:
-  url("../assets/img/hero-building-rooftop-1536.webp") center 38%/cover no-repeat,
-  linear-gradient(180deg,var(--sky-top),var(--sky-mid));
-  -webkit-mask:url("../assets/logo/emblem-mask.svg") center/contain no-repeat;
-  mask:url("../assets/logo/emblem-mask.svg") center/contain no-repeat;
-  will-change:transform,opacity}
+.page-intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;isolation:isolate;background:
+  radial-gradient(120% 60% at 18% 8%,rgba(255,255,255,.45),transparent 60%),
+  linear-gradient(180deg,var(--sky-top) 0%,var(--navy-18) 30%,var(--sky-mid) 58%,var(--haze) 100%);overflow:hidden}
+.intro-portal,.intro-expansion{position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:0;visibility:hidden}
+.intro-portal{z-index:1;-webkit-mask:url("../assets/logo/emblem-mask.svg") 50% 50%/var(--portal-size,380px) auto no-repeat;mask:url("../assets/logo/emblem-mask.svg") 50% 50%/var(--portal-size,380px) auto no-repeat;will-change:opacity,-webkit-mask-size,mask-size}
+.intro-expansion{z-index:2;clip-path:circle(0 at 50% 50%);will-change:clip-path,opacity}
+.intro-scene{position:absolute;inset:0;overflow:hidden;background:
+  radial-gradient(120% 60% at 18% 8%,rgba(255,255,255,.45),transparent 60%),
+  linear-gradient(180deg,var(--sky-top) 0%,var(--navy-18) 30%,var(--sky-mid) 58%,var(--haze) 100%)}
+.intro-scene-building{position:absolute;left:50%;width:max(100vw,1500px);height:auto;top:max(62vh,500px);transform:translateX(-50%);transform-origin:50% 58%;z-index:3;will-change:transform}
+.intro-scene-haze{z-index:4}
+.intro-debug{position:fixed;right:16px;bottom:16px;z-index:1000;display:flex;gap:8px;padding:8px;background:rgba(255,255,255,.88);border:1px solid var(--line);border-radius:999px;box-shadow:0 10px 30px rgba(0,71,137,.12);backdrop-filter:blur(10px)}
+.intro-debug[hidden]{display:none}
+.intro-debug button{border:0;border-radius:999px;background:var(--navy);color:var(--white);font:600 12px/1 var(--body);padding:10px 14px;cursor:pointer}
+.intro-debug button[aria-pressed="true"]{background:var(--cyan);color:var(--navy)}
 .hero{position:relative;height:100vh;height:100svh;min-height:620px}
 .hero-stage{position:absolute;inset:0;overflow:hidden;background:var(--haze)}
 .hero-sky{position:absolute;inset:0;background:
@@ -112,7 +118,7 @@ h1,h2,h3,h4,.svc-word,.hero-caption span,.facts b,.stats dd,.intent span{font-fa
   radial-gradient(42% 70% at 74% 100%,rgba(240,244,248,.98),rgba(240,244,248,0) 70%),
   radial-gradient(30% 50% at 98% 96%,rgba(255,255,255,.9),rgba(255,255,255,0) 70%),
   linear-gradient(180deg,rgba(240,244,248,0) 0%,rgba(240,244,248,.75) 55%,var(--haze) 88%)}
-.hero-lines{position:fixed;left:50%;top:50%;height:min(60vh,580px);aspect-ratio:87/95;transform:translate(-50%,-50%);z-index:101;pointer-events:none;display:none}
+.hero-lines{position:fixed;left:50%;top:50%;height:min(60vh,580px);aspect-ratio:87/95;transform:translate(-50%,-50%);transform-origin:50% 50%;z-index:3;pointer-events:none;display:none;will-change:transform,opacity}
 .hero-lines svg{width:100%;height:100%}
 .hero-lines .ln{stroke:var(--navy);stroke-width:.45}
 .hero-window{position:absolute;inset:0;z-index:6;pointer-events:none;display:none}
@@ -322,7 +328,8 @@ h1,h2,h3,h4,.svc-word,.hero-caption span,.facts b,.stats dd,.intent span{font-fa
   .footer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:900px){
-  .intro-logo-fill{background-image:url("../assets/img/hero-building-rooftop-1200.webp"),linear-gradient(180deg,var(--sky-top),var(--sky-mid))}
+  .intro-portal{--portal-size:240px}
+  .intro-scene-building{width:max(210vw,760px);top:max(58vh,470px)}
   :root{--header:76px}
   .site-header.is-scrolled .brand .logo{height:46px}
   .header-actions .btn-sm{display:none}
@@ -331,7 +338,7 @@ h1,h2,h3,h4,.svc-word,.hero-caption span,.facts b,.stats dd,.intent span{font-fa
   .hero-title .line{display:block}
   .hero-building{width:max(210vw,760px);top:max(58vh,470px)}
   .hero-haze{height:50vh}
-  .hero-lines{height:46vh}
+  .hero-lines{height:min(46vh,430px)}
   .scroll-cue{display:none}
   .grid-label,.services-head{grid-template-columns:1fr;gap:18px}
   .grid-label .label,.services-head .label{padding-top:0}

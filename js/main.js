@@ -5,7 +5,62 @@
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var header = document.querySelector("[data-header]");
   var intro = document.querySelector("[data-page-intro]");
-  var introFill = document.querySelector("[data-intro-fill]");
+  var hero = document.querySelector("[data-hero]");
+  var copy = hero.querySelector("[data-hero-copy]");
+  var subs = hero.querySelectorAll("[data-hero-sub]");
+  var building = hero.querySelector("[data-hero-building]");
+  var heroHaze = hero.querySelector(".hero-haze");
+  var eyebrow = hero.querySelector(".hero-eyebrow");
+  var title = hero.querySelector(".hero-title");
+  var heroSub = hero.querySelector(".hero-sub");
+  var heroCta = hero.querySelector(".hero-cta");
+  var scrollCue = hero.querySelector(".scroll-cue");
+  var linesWrap = document.querySelector("[data-hero-lines]");
+  var lines = linesWrap ? Array.prototype.slice.call(linesWrap.querySelectorAll(".ln")) : [];
+  var portal = document.querySelector("[data-intro-portal]");
+  var portalScene = document.querySelector("[data-intro-portal-scene]");
+  var portalBuilding = portalScene ? portalScene.querySelector(".intro-scene-building") : null;
+  var expansion = document.querySelector("[data-intro-expansion]");
+  var expansionScene = document.querySelector("[data-intro-expansion-scene]");
+  var expansionBuilding = expansionScene ? expansionScene.querySelector(".intro-scene-building") : null;
+  var debugPanel = document.querySelector("[data-intro-debug]");
+  var replayBtn = document.querySelector("[data-intro-replay]");
+  var speedBtn = document.querySelector("[data-intro-speed]");
+  var debugIntro = new URLSearchParams(window.location.search).get("debugIntro") === "1";
+  var introSlow = false;
+  var introTimeline = null;
+
+  if (intro && "scrollRestoration" in history) history.scrollRestoration = "manual";
+
+  lines.forEach(function (el) {
+    var length = el.getTotalLength();
+    el.dataset.pathLength = length;
+    el.style.strokeDasharray = length + " " + length;
+    el.style.strokeDashoffset = length;
+  });
+
+  function resetLines() {
+    lines.forEach(function (el) { el.style.strokeDashoffset = el.dataset.pathLength; });
+  }
+
+  function preloadImage(src) {
+    return new Promise(function (resolve) {
+      var image = new Image();
+      image.onload = image.onerror = resolve;
+      image.src = src;
+      if (image.complete) resolve();
+    });
+  }
+
+  function preloadCriticalAssets() {
+    var fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+    return Promise.all([
+      fontsReady,
+      preloadImage("assets/logo/emblem-mask.svg"),
+      preloadImage("assets/img/hero-building-rooftop-1200.webp"),
+      preloadImage("assets/img/hero-building-rooftop-1536.webp")
+    ]);
+  }
 
   function setHeader(y) { header.classList.toggle("is-scrolled", y > 40); }
   setHeader(window.scrollY);
@@ -88,10 +143,30 @@
     statement.innerHTML = statement.textContent.trim().split(/\s+/).map(function (w) { return '<span class="w">' + w + "</span>"; }).join(" ");
   }
 
-  if (reduce || !window.gsap || !window.ScrollTrigger || !window.Lenis) {
+  if (!window.gsap || !window.ScrollTrigger || !window.Lenis) {
     doc.classList.add("no-motion");
     if (intro) intro.remove();
     window.addEventListener("scroll", function () { setHeader(window.scrollY); }, { passive: true });
+    return;
+  }
+
+  if (reduce) {
+    doc.classList.add("no-motion", "intro-active");
+    gsap.set(linesWrap, { display: "block", autoAlpha: 1 });
+    gsap.set(portal, { autoAlpha: 0 });
+    preloadCriticalAssets().then(function () {
+      gsap.timeline({
+        defaults: { ease: "power2.out" },
+        onComplete: function () {
+          doc.classList.remove("intro-active");
+          if (intro) intro.remove();
+          window.addEventListener("scroll", function () { setHeader(window.scrollY); }, { passive: true });
+        }
+      })
+        .to(lines, { strokeDashoffset: 0, duration: 0.24, stagger: 0.012 })
+        .to(portal, { autoAlpha: 1, duration: 0.16 }, "<0.08")
+        .to(intro, { autoAlpha: 0, duration: 0.2 }, ">0.05");
+    });
     return;
   }
 
@@ -101,6 +176,7 @@
   /* smooth scroll */
   var lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
   window.__lenis = lenis;
+  if (intro) lenis.stop();
   lenis.on("scroll", function (e) { ScrollTrigger.update(); setHeader(e.scroll); });
   gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
   gsap.ticker.lagSmoothing(0);
@@ -115,53 +191,122 @@
     });
   });
 
-  /* ---------- 01 HERO: building rises, emblem draws, window opens ---------- */
-  var hero = document.querySelector("[data-hero]");
-  var copy = hero.querySelector("[data-hero-copy]");
-  var subs = hero.querySelectorAll("[data-hero-sub]");
-  var building = hero.querySelector("[data-hero-building]");
-  var linesWrap = document.querySelector("[data-hero-lines]");
-  var lines = linesWrap.querySelectorAll(".ln");
+  /* ---------- 01 HERO: emblem portal opens into the page ---------- */
   var win = hero.querySelector("[data-hero-window]");
   var video = hero.querySelector("[data-hero-video]");
   var caption = hero.querySelector("[data-hero-caption]");
 
-  lines.forEach(function (el) {
-    var len = el.getTotalLength();
-    el.style.strokeDasharray = len + " " + len;
-    el.style.strokeDashoffset = len;
-  });
+  function finishIntro() {
+    doc.classList.remove("intro-active");
+    lenis.start();
+    gsap.set(linesWrap, { display: "none", clearProps: "opacity,visibility,transform" });
+    gsap.set([header, eyebrow, title, heroSub, heroCta, building, heroHaze, scrollCue], {
+      clearProps: "opacity,visibility,transform"
+    });
+    gsap.set([portalBuilding, expansionBuilding], { clearProps: "transform,willChange" });
+    if (debugIntro) {
+      gsap.set(intro, { display: "none" });
+    } else if (intro) {
+      intro.remove();
+    }
+    ScrollTrigger.refresh();
+  }
 
-  /* The emblem is now a one-time page intro. The hero remains visible beneath
-     the sky-blue layer, so the final wipe reveals the page immediately. */
-  if (intro && introFill) {
+  function runIntro() {
+    if (!intro || !portal || !expansion || !linesWrap) return;
+    if (introTimeline) introTimeline.kill();
+    lenis.stop();
+    lenis.scrollTo(0, { immediate: true, force: true });
+    window.scrollTo(0, 0);
     doc.classList.add("intro-active");
-    gsap.set(header, { autoAlpha: 0 });
-    gsap.set(intro, { clipPath: "inset(0 0 0% 0)" });
-    gsap.set(linesWrap, { display: "block", autoAlpha: 1 });
-    gsap.set(introFill, { autoAlpha: 0, scale: 0.9 });
+    resetLines();
 
-    gsap.timeline({
-      defaults: { ease: "power2.out" },
-      onComplete: function () {
-        doc.classList.remove("intro-active");
-        intro.remove();
-        gsap.set(linesWrap, { display: "none" });
-        gsap.set(header, { clearProps: "opacity,visibility" });
-        ScrollTrigger.refresh();
-      }
-    })
-      .to(lines, { strokeDashoffset: 0, duration: 1.1, stagger: 0.055, ease: "power1.inOut" })
-      .to({}, { duration: 0.38 })
-      .to(introFill, { autoAlpha: 1, scale: 1, duration: 0.68 }, ">")
-      .to(lines, { autoAlpha: 0, duration: 0.4 }, "<0.12")
-      .to({}, { duration: 0.58 })
-      .to(introFill, { scale: 1.14, duration: 0.7, ease: "power2.inOut" })
-      .to(intro, { autoAlpha: 0, duration: 0.88, ease: "power2.inOut" }, "<0.16")
-      .to(header, { autoAlpha: 1, duration: 0.62 }, "<0.1");
+    var mobile = window.innerWidth <= 900;
+    var initialSize = mobile ? Math.min(window.innerWidth * 0.68, 280) : Math.min(window.innerHeight * 0.56, 460);
+    var endSize = Math.hypot(window.innerWidth, window.innerHeight) * 2.25;
+    var outerLines = lines.slice(0, 2);
+    var innerLines = lines.slice(2);
+
+    gsap.set(intro, { display: "grid", autoAlpha: 1 });
+    gsap.set(linesWrap, { display: "block", autoAlpha: 1, scale: 1 });
+    gsap.set(lines, { autoAlpha: 1 });
+    gsap.set(portal, {
+      autoAlpha: 0,
+      webkitMaskSize: initialSize + "px auto",
+      maskSize: initialSize + "px auto"
+    });
+    gsap.set(expansion, { autoAlpha: 0, clipPath: "circle(0 at 50% 50%)" });
+    gsap.set([portalBuilding, expansionBuilding], {
+      y: -window.innerHeight * (mobile ? 0.16 : 0.24),
+      scale: 1.08,
+      transformOrigin: "50% 58%"
+    });
+    gsap.set(header, { autoAlpha: 0, y: -12 });
+    gsap.set(eyebrow, { autoAlpha: 0, y: 14 });
+    gsap.set(title, { autoAlpha: 0, y: 24 });
+    gsap.set(heroSub, { autoAlpha: 0, y: 18 });
+    gsap.set(heroCta, { autoAlpha: 0, y: 16 });
+    gsap.set([building, heroHaze], { autoAlpha: 0 });
+    gsap.set(scrollCue, { autoAlpha: 0, y: 12 });
+
+    introTimeline = gsap.timeline({
+      paused: true,
+      defaults: { ease: "power3.inOut" },
+      onComplete: finishIntro
+    });
+    if (debugIntro) window.__introTimeline = introTimeline;
+
+    introTimeline
+      .to({}, { duration: 0.28 })
+      .addLabel("draw", 0.28)
+      .to(outerLines, { strokeDashoffset: 0, duration: 0.96, stagger: 0.12, ease: "power2.inOut" }, "draw")
+      .to(innerLines, { strokeDashoffset: 0, duration: 0.86, stagger: 0.052, ease: "power3.inOut" }, "draw+=0.26")
+      .to(portal, { autoAlpha: 1, duration: 0.74, ease: "power2.out" }, "draw+=0.5")
+      .to([portalBuilding, expansionBuilding], { scale: 1.03, duration: 1.42, ease: "power3.out" }, "draw+=0.46")
+      .addLabel("hold", 1.82)
+      .to({}, { duration: 0.42 }, "hold")
+      .addLabel("open", 2.24)
+      .set(expansion, { autoAlpha: 1, clipPath: "circle(10vmin at 50% 50%)" }, "open")
+      .to(expansion, { clipPath: "circle(120vmax at 50% 50%)", duration: 1.46, ease: "power4.inOut" }, "open")
+      .to([portalBuilding, expansionBuilding], { y: 0, scale: 1, duration: 1.46, ease: "power4.inOut" }, "open")
+      .to(portal, {
+        webkitMaskSize: endSize + "px auto",
+        maskSize: endSize + "px auto",
+        duration: 1.38,
+        ease: "power4.inOut"
+      }, "open")
+      .to(linesWrap, { scale: mobile ? 6.5 : 5.6, autoAlpha: 0, duration: 1.24, ease: "power4.in" }, "open")
+      .to(portal, { autoAlpha: 0, duration: 0.5, ease: "power2.out" }, "open+=0.58")
+      .to(header, { autoAlpha: 1, y: 0, duration: 0.58, ease: "power3.out" }, "open+=0.72")
+      .to(eyebrow, { autoAlpha: 1, y: 0, duration: 0.52, ease: "power3.out" }, "open+=0.84")
+      .to(title, { autoAlpha: 1, y: 0, duration: 0.66, ease: "power3.out" }, "open+=0.96")
+      .to(heroSub, { autoAlpha: 1, y: 0, duration: 0.54, ease: "power3.out" }, "open+=1.08")
+      .to(heroCta, { autoAlpha: 1, y: 0, duration: 0.54, ease: "power3.out" }, "open+=1.2")
+      .set([building, heroHaze], { autoAlpha: 1 }, "open+=1.32")
+      .to(scrollCue, { autoAlpha: 1, y: 0, duration: 0.44, ease: "power3.out" }, "open+=1.36")
+      .to(expansion, { autoAlpha: 0, duration: 0.52, ease: "power2.out" }, "open+=1.38")
+      .to(intro, { autoAlpha: 0, duration: 0.18, ease: "none" }, "open+=1.72");
+
+    introTimeline.timeScale(introSlow ? 0.5 : 1).play(0);
+  }
+
+  if (debugIntro && debugPanel) debugPanel.hidden = false;
+  if (replayBtn) replayBtn.addEventListener("click", runIntro);
+  if (speedBtn) {
+    speedBtn.addEventListener("click", function () {
+      introSlow = !introSlow;
+      speedBtn.setAttribute("aria-pressed", String(introSlow));
+      speedBtn.textContent = introSlow ? "Speed 0.5×" : "Speed 1×";
+      if (introTimeline) introTimeline.timeScale(introSlow ? 0.5 : 1);
+    });
+  }
+
+  if (intro) {
+    doc.classList.add("intro-active");
+    preloadCriticalAssets().then(runIntro, runIntro);
   } else {
-    if (intro) intro.remove();
     gsap.set(linesWrap, { display: "none" });
+    lenis.start();
   }
 
   /* The scroll transition now moves directly from the hero image into video.
