@@ -156,9 +156,9 @@
       .to(introFill, { autoAlpha: 1, scale: 1, duration: 0.68 }, ">")
       .to(lines, { autoAlpha: 0, duration: 0.4 }, "<0.12")
       .to({}, { duration: 0.58 })
-      .to(introFill, { scale: 1.05, duration: 0.55, ease: "power2.inOut" })
-      .to(intro, { clipPath: "inset(0 0 100% 0)", duration: 0.82, ease: "power3.inOut" }, "<0.18")
-      .to(header, { autoAlpha: 1, duration: 0.55 }, "<0.08");
+      .to(introFill, { scale: 1.14, duration: 0.7, ease: "power2.inOut" })
+      .to(intro, { autoAlpha: 0, duration: 0.88, ease: "power2.inOut" }, "<0.16")
+      .to(header, { autoAlpha: 1, duration: 0.62 }, "<0.1");
   } else {
     if (intro) intro.remove();
     gsap.set(linesWrap, { display: "none" });

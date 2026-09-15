@@ -87,7 +87,12 @@ h1,h2,h3,h4,.svc-word,.hero-caption span,.facts b,.stats dd,.intent span{font-fa
 .page-intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:
   radial-gradient(70% 50% at 50% 48%,color-mix(in srgb,var(--cyan) 20%,var(--white)),transparent 72%),
   linear-gradient(180deg,var(--sky-top),var(--sky-mid));overflow:hidden;will-change:clip-path,opacity}
-.intro-logo-fill{height:min(58vh,560px);aspect-ratio:84/92;background:url("../assets/logo/adure-emblem.svg") center/contain no-repeat;will-change:transform,opacity}
+.intro-logo-fill{height:min(58vh,560px);aspect-ratio:84/92;background:
+  url("../assets/img/hero-building-rooftop-1536.webp") center 38%/cover no-repeat,
+  linear-gradient(180deg,var(--sky-top),var(--sky-mid));
+  -webkit-mask:url("../assets/logo/emblem-mask.svg") center/contain no-repeat;
+  mask:url("../assets/logo/emblem-mask.svg") center/contain no-repeat;
+  will-change:transform,opacity}
 .hero{position:relative;height:100vh;height:100svh;min-height:620px}
 .hero-stage{position:absolute;inset:0;overflow:hidden;background:var(--haze)}
 .hero-sky{position:absolute;inset:0;background:
@@ -317,6 +322,7 @@ h1,h2,h3,h4,.svc-word,.hero-caption span,.facts b,.stats dd,.intent span{font-fa
   .footer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:900px){
+  .intro-logo-fill{background-image:url("../assets/img/hero-building-rooftop-1200.webp"),linear-gradient(180deg,var(--sky-top),var(--sky-mid))}
   :root{--header:76px}
   .site-header.is-scrolled .brand .logo{height:46px}
   .header-actions .btn-sm{display:none}
