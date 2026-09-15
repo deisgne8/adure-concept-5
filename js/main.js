@@ -7,7 +7,6 @@
   var intro = document.querySelector("[data-page-intro]");
   var hero = document.querySelector("[data-hero]");
   var copy = hero.querySelector("[data-hero-copy]");
-  var subs = hero.querySelectorAll("[data-hero-sub]");
   var building = hero.querySelector("[data-hero-building]");
   var heroHaze = hero.querySelector(".hero-haze");
   var eyebrow = hero.querySelector(".hero-eyebrow");
@@ -20,19 +19,11 @@
   var linesWrap = document.querySelector("[data-hero-lines]");
   var lines = linesWrap ? Array.prototype.slice.call(linesWrap.querySelectorAll(".ln")) : [];
   var portal = document.querySelector("[data-intro-portal]");
-  var portalScene = document.querySelector("[data-intro-portal-scene]");
-  var portalBuilding = portalScene ? portalScene.querySelector(".intro-scene-building") : null;
   var expansion = document.querySelector("[data-intro-expansion]");
-  var expansionScene = document.querySelector("[data-intro-expansion-scene]");
-  var expansionBuilding = expansionScene ? expansionScene.querySelector(".intro-scene-building") : null;
-  var debugPanel = document.querySelector("[data-intro-debug]");
-  var replayBtn = document.querySelector("[data-intro-replay]");
-  var speedBtn = document.querySelector("[data-intro-speed]");
-  var debugIntro = new URLSearchParams(window.location.search).get("debugIntro") === "1";
-  var introSlow = false;
   var introTimeline = null;
 
-  if (intro && "scrollRestoration" in history) history.scrollRestoration = "manual";
+  var previousScrollRestoration = "scrollRestoration" in history ? history.scrollRestoration : null;
+  if (intro && previousScrollRestoration !== null) history.scrollRestoration = "manual";
 
   lines.forEach(function (el) {
     var length = el.getTotalLength();
@@ -56,11 +47,13 @@
 
   function preloadCriticalAssets() {
     var fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+    var heroImage = window.innerWidth <= 900 ?
+      "assets/img/hero-building-rooftop-1200.webp" :
+      "assets/img/hero-building-rooftop-1536.webp";
     return Promise.all([
       fontsReady,
       preloadImage("assets/logo/emblem-mask.svg"),
-      preloadImage("assets/img/hero-building-rooftop-1200.webp"),
-      preloadImage("assets/img/hero-building-rooftop-1536.webp")
+      preloadImage(heroImage)
     ]);
   }
 
@@ -148,6 +141,7 @@
   if (!window.gsap || !window.ScrollTrigger || !window.Lenis) {
     doc.classList.add("no-motion");
     if (intro) intro.remove();
+    if (previousScrollRestoration !== null) history.scrollRestoration = previousScrollRestoration;
     window.addEventListener("scroll", function () { setHeader(window.scrollY); }, { passive: true });
     return;
   }
@@ -155,13 +149,19 @@
   if (reduce) {
     doc.classList.add("no-motion", "intro-active");
     gsap.set(linesWrap, { display: "block", autoAlpha: 1 });
-    gsap.set(portal, { autoAlpha: 0 });
+    var reducedMaskSize = linesWrap.getBoundingClientRect().width * (84 / 87);
+    gsap.set(portal, {
+      autoAlpha: 0,
+      webkitMaskSize: reducedMaskSize + "px auto",
+      maskSize: reducedMaskSize + "px auto"
+    });
     preloadCriticalAssets().then(function () {
       gsap.timeline({
         defaults: { ease: "power2.out" },
         onComplete: function () {
           doc.classList.remove("intro-active");
           if (intro) intro.remove();
+          if (previousScrollRestoration !== null) history.scrollRestoration = previousScrollRestoration;
           window.addEventListener("scroll", function () { setHeader(window.scrollY); }, { passive: true });
         }
       })
@@ -194,23 +194,16 @@
   });
 
   /* ---------- 01 HERO: emblem portal opens into the page ---------- */
-  var win = hero.querySelector("[data-hero-window]");
-  var video = hero.querySelector("[data-hero-video]");
-  var caption = hero.querySelector("[data-hero-caption]");
-
   function finishIntro() {
     doc.classList.remove("intro-active");
+    if (previousScrollRestoration !== null) history.scrollRestoration = previousScrollRestoration;
     lenis.start();
     gsap.set(linesWrap, { display: "none", clearProps: "opacity,visibility,transform" });
     gsap.set([header, eyebrow, title, heroSub, heroCta, building, heroHaze, scrollCue].concat(titleLines, heroCtas), {
       clearProps: "opacity,visibility,transform"
     });
-    gsap.set([portalBuilding, expansionBuilding], { clearProps: "transform,willChange" });
-    if (debugIntro) {
-      gsap.set(intro, { display: "none" });
-    } else if (intro) {
-      intro.remove();
-    }
+    if (intro) intro.remove();
+    ScrollTrigger.getAll().forEach(function (trigger) { trigger.enable(false, true); });
     ScrollTrigger.refresh();
   }
 
@@ -220,17 +213,19 @@
     lenis.stop();
     lenis.scrollTo(0, { immediate: true, force: true });
     window.scrollTo(0, 0);
+    if (previousScrollRestoration !== null) history.scrollRestoration = "manual";
     doc.classList.add("intro-active");
+    ScrollTrigger.getAll().forEach(function (trigger) { trigger.disable(false, true); });
     resetLines();
 
-    var mobile = window.innerWidth <= 900;
     var endSize = Math.hypot(window.innerWidth, window.innerHeight) * 2.25;
     var outerLines = lines.slice(0, 2);
     var innerLines = lines.slice(2);
 
-    gsap.set(intro, { display: "grid", autoAlpha: 1 });
+    gsap.set(intro, { display: "grid", autoAlpha: 1, pointerEvents: "auto" });
     gsap.set(linesWrap, { display: "block", autoAlpha: 1, scale: 1 });
-    var initialSize = linesWrap.getBoundingClientRect().width;
+    var initialSize = linesWrap.getBoundingClientRect().width * (84 / 87);
+    var outlineScale = endSize / initialSize;
     gsap.set(lines, { autoAlpha: 1 });
     gsap.set(portal, {
       autoAlpha: 0,
@@ -238,17 +233,13 @@
       maskSize: initialSize + "px auto"
     });
     gsap.set(expansion, { autoAlpha: 0, clipPath: "circle(0 at 50% 50%)" });
-    gsap.set([portalBuilding, expansionBuilding], {
-      y: -window.innerHeight * (mobile ? 0.16 : 0.24),
-      scale: 1.06,
-      transformOrigin: "50% 58%"
-    });
     gsap.set(header, { autoAlpha: 0, y: -12 });
     gsap.set(eyebrow, { autoAlpha: 0, y: 14 });
     gsap.set(titleLines, { autoAlpha: 0, y: 24 });
     gsap.set(heroSub, { autoAlpha: 0, y: 18 });
     gsap.set(heroCtas, { autoAlpha: 0, y: 16 });
-    gsap.set([building, heroHaze], { autoAlpha: 0 });
+    gsap.set(building, { autoAlpha: 0, y: 30 });
+    gsap.set(heroHaze, { autoAlpha: 0 });
     gsap.set(scrollCue, { autoAlpha: 0, y: 12 });
 
     introTimeline = gsap.timeline({
@@ -256,52 +247,39 @@
       defaults: { ease: "power3.inOut" },
       onComplete: finishIntro
     });
-    if (debugIntro) window.__introTimeline = introTimeline;
-
     introTimeline
       .to({}, { duration: 0.2 })
       .addLabel("draw", 0.2)
       .to(outerLines, { strokeDashoffset: 0, duration: 0.92, stagger: 0.11, ease: "power2.inOut" }, "draw")
       .to(innerLines, { strokeDashoffset: 0, duration: 0.84, stagger: 0.05, ease: "power3.inOut" }, "draw+=0.24")
       .to(portal, { autoAlpha: 1, duration: 0.72, ease: "power2.out" }, "draw+=0.48")
-      .to([portalBuilding, expansionBuilding], { scale: 1.02, duration: 1.36, ease: "power3.out" }, "draw+=0.44")
       .addLabel("emblemComplete", 1.7)
       .to({}, { duration: 0.55 }, "emblemComplete")
       .addLabel("open", 2.25)
-      .set(expansion, { autoAlpha: 1, clipPath: "circle(10vmin at 50% 50%)" }, "open")
-      .to(expansion, { clipPath: "circle(120vmax at 50% 50%)", duration: 1.25, ease: "power4.inOut" }, "open")
-      .to([portalBuilding, expansionBuilding], { y: 0, scale: 1, duration: 1.25, ease: "power4.inOut" }, "open")
+      .set(expansion, { autoAlpha: 1, clipPath: "circle(0 at 50% 50%)" }, "open+=0.24")
+      .to(expansion, { clipPath: "circle(120vmax at 50% 50%)", duration: 1.01, ease: "power4.inOut" }, "open+=0.24")
       .to(portal, {
         webkitMaskSize: endSize + "px auto",
         maskSize: endSize + "px auto",
         duration: 1.2,
         ease: "power4.inOut"
       }, "open")
-      .to(linesWrap, { scale: mobile ? 8 : 8.5, autoAlpha: 0, duration: 1.12, ease: "power4.in" }, "open")
+      .to(linesWrap, { scale: outlineScale, autoAlpha: 0, duration: 1.2, ease: "power4.inOut" }, "open")
       .to(portal, { autoAlpha: 0, duration: 0.45, ease: "power2.out" }, "open+=0.7")
-      .set([building, heroHaze], { autoAlpha: 1 }, "open+=1.13")
       .to(expansion, { autoAlpha: 0, duration: 0.2, ease: "none" }, "open+=1.2")
       .to(intro, { autoAlpha: 0, duration: 0.15, ease: "none" }, "open+=1.3")
       .addLabel("heroVisible", 3.7)
-      .to(header, { autoAlpha: 1, y: 0, duration: 0.45, ease: "power3.out" }, "heroVisible+=0.2")
-      .to(eyebrow, { autoAlpha: 1, y: 0, duration: 0.45, ease: "power3.out" }, "heroVisible+=0.35")
-      .to(titleLines, { autoAlpha: 1, y: 0, duration: 0.62, stagger: 0.07, ease: "power3.out" }, "heroVisible+=0.52")
-      .to(heroSub, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power3.out" }, "heroVisible+=0.75")
-      .to(heroCtas, { autoAlpha: 1, y: 0, duration: 0.48, stagger: 0.12, ease: "power3.out" }, "heroVisible+=0.92")
-      .to(scrollCue, { autoAlpha: 1, y: 0, duration: 0.4, ease: "power3.out" }, "heroVisible+=1.3");
+      .set(intro, { pointerEvents: "none" }, "heroVisible")
+      .to(header, { autoAlpha: 1, y: 0, duration: 0.48, ease: "power3.out" }, "heroVisible+=0.12")
+      .to(eyebrow, { autoAlpha: 1, y: 0, duration: 0.42, ease: "power3.out" }, "heroVisible+=0.6")
+      .to(titleLines, { autoAlpha: 1, y: 0, duration: 0.62, stagger: 0.07, ease: "power3.out" }, "heroVisible+=0.74")
+      .to(heroSub, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power3.out" }, "heroVisible+=0.98")
+      .to(heroCtas, { autoAlpha: 1, y: 0, duration: 0.48, stagger: 0.12, ease: "power3.out" }, "heroVisible+=1.14")
+      .to(building, { autoAlpha: 1, y: 0, duration: 0.72, ease: "power3.out" }, "heroVisible+=1.42")
+      .to(heroHaze, { autoAlpha: 1, duration: 0.5, ease: "power2.out" }, "heroVisible+=1.58")
+      .to(scrollCue, { autoAlpha: 1, y: 0, duration: 0.4, ease: "power3.out" }, "heroVisible+=1.82");
 
-    introTimeline.timeScale(introSlow ? 0.5 : 1).play(0);
-  }
-
-  if (debugIntro && debugPanel) debugPanel.hidden = false;
-  if (replayBtn) replayBtn.addEventListener("click", runIntro);
-  if (speedBtn) {
-    speedBtn.addEventListener("click", function () {
-      introSlow = !introSlow;
-      speedBtn.setAttribute("aria-pressed", String(introSlow));
-      speedBtn.textContent = introSlow ? "Speed 0.5×" : "Speed 1×";
-      if (introTimeline) introTimeline.timeScale(introSlow ? 0.5 : 1);
-    });
+    introTimeline.timeScale(0.5).play(0);
   }
 
   if (intro) {
@@ -312,38 +290,38 @@
     lenis.start();
   }
 
-  /* The scroll transition now moves directly from the hero image into video.
-     The emblem does not replay here. */
-  var mm = gsap.matchMedia();
-  mm.add({ desktop: "(min-width: 901px)", mobile: "(max-width: 900px)" }, function (ctx) {
-    var d = ctx.conditions.desktop;
-    var rise = function () { return -window.innerHeight * (d ? 0.5 : 0.26); };
-    gsap.set(building.querySelector("img"), { filter: "brightness(1) saturate(1)" });
-    gsap.set(win, { autoAlpha: 0 });
-    gsap.set(caption, { autoAlpha: 0, y: 24 });
+  /* Keep the building as the hero's final scroll moment after the video was removed. */
+  var heroMotion = gsap.matchMedia();
+  heroMotion.add({ desktop: "(min-width: 901px)", mobile: "(max-width: 900px)" }, function (ctx) {
+    var desktop = ctx.conditions.desktop;
+    var rise = function () { return -window.innerHeight * (desktop ? 0.34 : 0.2); };
+    var copyRise = function () { return -window.innerHeight * (desktop ? 0.07 : 0.045); };
 
-    var tl = gsap.timeline({
+    gsap.set(building, { transformOrigin: "50% 38%" });
+
+    gsap.timeline({
       defaults: { ease: "none" },
       scrollTrigger: {
-        trigger: hero, start: "top top", end: function () { return "+=" + window.innerHeight * (d ? 1.9 : 1.5); },
-        scrub: 0.7, pin: true, anticipatePin: 1, invalidateOnRefresh: true,
-        onUpdate: function (self) {
-          if (self.progress > 0.38 && video.paused) { video.play().catch(function () {}); }
-          if (self.progress < 0.32 && !video.paused) { video.pause(); }
-        }
+        trigger: hero,
+        start: "top top",
+        end: function () { return "+=" + window.innerHeight * (desktop ? 1.05 : 0.75); },
+        scrub: 0.7,
+        pin: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true
       }
-    });
-    tl.to(subs, { autoAlpha: 0, y: -24, duration: 0.35 }, 0)
-      .to(building, { y: rise, duration: 1.1, ease: "power1.inOut" }, 0)
-      .to(copy, { scale: 0.9, y: -window.innerHeight * 0.04, duration: 1.1 }, 0)
-      .to(copy, { autoAlpha: 0.22, duration: 0.55 }, 0.42)
-      .to(building.querySelector("img"), { filter: "brightness(0.68) saturate(0.9)", duration: 0.45 }, 0.65)
-      .to(copy, { autoAlpha: 0, duration: 0.3 }, 0.8)
-      .to(building, { autoAlpha: 0, duration: 0.55 }, 0.88)
-      .to(win, { autoAlpha: 1, duration: 0.72, ease: "power1.inOut" }, 0.78)
-      .to(caption, { autoAlpha: 1, y: 0, duration: 0.42 }, 1.28)
-      .to(caption, { autoAlpha: 0, y: -16, duration: 0.3 }, 1.92)
-      .to({}, { duration: 0.25 });
+    })
+      .to(scrollCue, { autoAlpha: 0, y: -12, duration: 0.22 }, 0)
+      .to(heroSub, { autoAlpha: 0, y: -18, duration: 0.32 }, 0)
+      .to(heroCta, { autoAlpha: 0, y: -16, duration: 0.32 }, 0)
+      .to(copy, { autoAlpha: 0, y: copyRise, scale: 0.94, duration: 0.66 }, 0.2)
+      .to(building, {
+        y: rise,
+        scale: desktop ? 1.16 : 1.1,
+        duration: 1,
+        ease: "power1.inOut"
+      }, 0)
+      .to(heroHaze, { scaleY: 1.06, transformOrigin: "50% 100%", duration: 1 }, 0);
   });
 
   /* ---------- 02 statement words darken as they are read ---------- */
@@ -373,14 +351,44 @@
     ScrollTrigger.create({ trigger: row, start: "top 58%", end: "bottom 58%", toggleClass: { targets: row, className: "is-active" } });
   });
 
+  /* ---------- proof: cards reveal in sequence and figures count up ---------- */
+  var stats = document.querySelector(".stats");
+  if (stats) {
+    var statCards = gsap.utils.toArray(".stats > div");
+    var statCounters = gsap.utils.toArray(".stats [data-count]");
+    var statsTl = gsap.timeline({
+      scrollTrigger: { trigger: stats, start: "top 82%", once: true }
+    });
+
+    statsTl.fromTo(statCards,
+      { autoAlpha: 0, y: 42, scale: 0.965 },
+      { autoAlpha: 1, y: 0, scale: 1, duration: 0.82, stagger: 0.16, ease: "power3.out", clearProps: "transform,opacity,visibility" }
+    );
+
+    statCounters.forEach(function (node, index) {
+      var target = Number(node.getAttribute("data-count"));
+      var counter = { value: 0 };
+      node.textContent = "0";
+      statsTl.to(counter, {
+        value: target,
+        duration: 1.35,
+        ease: "power2.out",
+        onUpdate: function () {
+          var value = Math.round(counter.value);
+          node.textContent = node.hasAttribute("data-plain") ? String(value) : value.toLocaleString("en-US");
+        }
+      }, 0.12 + index * 0.16);
+    });
+  }
+
   /* ---------- gentle entrances (transform only; content always visible) ---------- */
-  gsap.utils.toArray(".card, .pillar, .handover-steps li, .intent, .stats div").forEach(function (el, i) {
+  gsap.utils.toArray(".card, .pillar, .handover-steps li, .intent").forEach(function (el, i) {
     gsap.from(el, { y: 44, duration: 1.1, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 92%", once: true } });
   });
   /* handover: the cyan line runs through the four weeks */
   var hsLine = document.querySelector("[data-hs-line]");
   if (hsLine) {
-    mm.add({ wide: "(min-width: 901px)", narrow: "(max-width: 900px)" }, function (c) {
+    heroMotion.add({ wide: "(min-width: 901px)", narrow: "(max-width: 900px)" }, function (c) {
       var prop = c.conditions.wide ? "scaleX" : "scaleY";
       var from = {}; from[prop] = 0; var to = { ease: "none", scrollTrigger: { trigger: "[data-handover]", start: "top 88%", end: c.conditions.wide ? "top 40%" : "bottom 70%", scrub: true } }; to[prop] = 1;
       gsap.fromTo(hsLine, from, to);
