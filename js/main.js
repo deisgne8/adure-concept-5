@@ -84,7 +84,7 @@
     });
   }
 
-  /* buy / rent toggle and favourites */
+  /* buy / lease toggle and favourites */
   document.querySelectorAll("[data-seg]").forEach(function (b) {
     b.addEventListener("click", function () {
       document.querySelectorAll("[data-seg]").forEach(function (o) { o.setAttribute("aria-pressed", String(o === b)); });
