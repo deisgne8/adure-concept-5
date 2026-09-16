@@ -11,7 +11,7 @@
 <link rel="preload" href="assets/img/hero-building-rooftop-1536.webp" as="image" type="image/webp" media="(min-width: 901px)">
 <link rel="stylesheet" href="assets/fonts/fonts.css">
 <link rel="stylesheet" href="assets/vendor/leaflet.min.css">
-<link rel="stylesheet" href="css/style.css?v=20260916b">
+<link rel="stylesheet" href="css/style.css?v=20260916c">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -285,7 +285,56 @@
 
 </section>
 
-<!-- 06 HANDOVER -->
+<!-- 06 PORTFOLIO -->
+<section class="portfolio" id="portfolio" aria-labelledby="portfolio-title" aria-label="Our portfolio">
+  <div class="wrap portfolio-head">
+    <div class="portfolio-copy">
+      <h2 id="portfolio-title" class="h-display">A Portfolio <span class="mute">with Purpose</span></h2>
+      <p class="lede">Across residential and retail assets, every property carries its own audience and potential.</p>
+      <p class="portfolio-note">Our role is to understand what makes each one distinct and manage it accordingly.</p>
+    </div>
+    <div class="portfolio-filters" role="group" aria-label="Filter portfolio">
+      <button class="portfolio-filter is-active" type="button" data-portfolio-filter="all" aria-pressed="true">All</button>
+      <button class="portfolio-filter" type="button" data-portfolio-filter="residential" aria-pressed="false">Residential</button>
+      <button class="portfolio-filter" type="button" data-portfolio-filter="retail" aria-pressed="false">Retail</button>
+    </div>
+  </div>
+  <div class="wrap portfolio-grid" id="portfolio-grid" data-portfolio-grid>
+    <article class="portfolio-card" data-portfolio-type="residential">
+      <figure class="portfolio-image"><img src="assets/img/unit-1-1000.webp" alt="Residential property in Abu Dhabi" loading="lazy" width="1000" height="1250"></figure>
+      <div class="portfolio-card-copy">
+        <h3>[PROJECT NAME]</h3>
+        <p>Residential <span aria-hidden="true">·</span> Abu Dhabi</p>
+      </div>
+    </article>
+    <article class="portfolio-card" data-portfolio-type="residential">
+      <figure class="portfolio-image"><img src="assets/img/unit-2-1000.webp" alt="Residential property in Al Ain" loading="lazy" width="1000" height="1250"></figure>
+      <div class="portfolio-card-copy">
+        <h3>[PROJECT NAME]</h3>
+        <p>Residential <span aria-hidden="true">·</span> Al Ain</p>
+      </div>
+    </article>
+    <article class="portfolio-card" data-portfolio-type="retail">
+      <figure class="portfolio-image"><img src="assets/img/unit-3-1000.webp" alt="Retail property in Abu Dhabi" loading="lazy" width="1000" height="1250"></figure>
+      <div class="portfolio-card-copy">
+        <h3>[PROJECT NAME]</h3>
+        <p>Retail <span aria-hidden="true">·</span> Abu Dhabi</p>
+      </div>
+    </article>
+    <article class="portfolio-card" data-portfolio-type="residential">
+      <figure class="portfolio-image"><img src="assets/img/unit-4-1000.webp" alt="Residential property in Dubai" loading="lazy" width="1000" height="1250"></figure>
+      <div class="portfolio-card-copy">
+        <h3>[PROJECT NAME]</h3>
+        <p>Residential <span aria-hidden="true">·</span> Dubai</p>
+      </div>
+    </article>
+  </div>
+  <div class="wrap portfolio-actions">
+    <a class="btn btn-ghost" href="#portfolio-grid">Explore Our Portfolio <i class="arr" aria-hidden="true"></i></a>
+  </div>
+</section>
+
+<!-- 07 HANDOVER -->
 <section class="handover" id="handover" aria-labelledby="handover-title">
   <div class="handover-media" aria-hidden="true"><img src="assets/img/handover-beach-1536.webp" alt="" loading="lazy" width="1536" height="864"></div>
   <div class="wrap">
@@ -365,7 +414,7 @@
     </div>
     <nav class="footer-col" aria-label="Company"><h4>Company</h4><a href="#customers">Our Customers</a><a href="#">Media &amp; Gallery</a><a href="#">Careers</a></nav>
     <nav class="footer-col" aria-label="Services"><h4>Services</h4><a href="#services">Buy</a><a href="#services">Sell</a><a href="#services">Lease</a><a href="#management">Property Management</a></nav>
-    <nav class="footer-col" aria-label="Properties"><h4>Properties</h4><a href="#properties">Available Properties</a><a href="#contact">List Your Property</a><a href="#">Portfolio</a></nav>
+    <nav class="footer-col" aria-label="Properties"><h4>Properties</h4><a href="#properties">Available Properties</a><a href="#contact">List Your Property</a><a href="#portfolio">Portfolio</a></nav>
     <div class="footer-col"><h4>Contact</h4><a href="tel:+97126457869">+971 2 645 7869</a><a href="tel:+971566805125">+971 56 680 5125</a><a href="mailto:Inquiries@adu-re.com">Inquiries@adu-re.com</a><p>Abu Dhabi · Dubai · Al Ain</p></div>
   </div>
   <div class="wrap footer-base"><p>© 2026 Abu Dhabi United Real Estate</p><p><a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="#" lang="ar">العربية</a></p></div>
@@ -375,6 +424,6 @@
 <script src="assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="assets/vendor/lenis.min.js" defer></script>
 <script src="assets/vendor/leaflet.min.js" defer></script>
-<script src="js/main.js?v=20260916b" defer></script>
+<script src="js/main.js?v=20260916c" defer></script>
 </body>
 </html>

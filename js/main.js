@@ -132,6 +132,22 @@
     b.addEventListener("click", function () { focusPin(Number(b.getAttribute("data-pin"))); });
   });
 
+  /* portfolio category filter */
+  document.querySelectorAll("[data-portfolio-filter]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var filter = button.getAttribute("data-portfolio-filter");
+      document.querySelectorAll("[data-portfolio-filter]").forEach(function (item) {
+        var active = item === button;
+        item.classList.toggle("is-active", active);
+        item.setAttribute("aria-pressed", String(active));
+      });
+      document.querySelectorAll("[data-portfolio-type]").forEach(function (card) {
+        card.hidden = filter !== "all" && card.getAttribute("data-portfolio-type") !== filter;
+      });
+      if (window.ScrollTrigger) ScrollTrigger.refresh();
+    });
+  });
+
   /* split the statement into words (used by the scroll reveal) */
   var statement = document.querySelector("[data-reveal-words]");
   if (statement) {
@@ -382,7 +398,7 @@
   }
 
   /* ---------- gentle entrances (transform only; content always visible) ---------- */
-  gsap.utils.toArray(".card, .pillar, .handover-steps li, .intent").forEach(function (el, i) {
+  gsap.utils.toArray(".card, .pillar, .portfolio-card, .handover-steps li, .intent").forEach(function (el, i) {
     gsap.from(el, { y: 44, duration: 1.1, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 92%", once: true } });
   });
   /* handover: the cyan line runs through the four weeks */
