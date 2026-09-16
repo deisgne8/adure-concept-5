@@ -141,9 +141,13 @@
         item.classList.toggle("is-active", active);
         item.setAttribute("aria-pressed", String(active));
       });
+      var visibleCount = 0;
       document.querySelectorAll("[data-portfolio-type]").forEach(function (card) {
         card.hidden = filter !== "all" && card.getAttribute("data-portfolio-type") !== filter;
+        if (!card.hidden) visibleCount++;
       });
+      var emptyState = document.querySelector("[data-portfolio-empty]");
+      if (emptyState) emptyState.hidden = visibleCount !== 0;
       if (window.ScrollTrigger) ScrollTrigger.refresh();
     });
   });
