@@ -13,7 +13,6 @@
   var title = hero.querySelector(".hero-title");
   var titleLines = Array.prototype.slice.call(title.querySelectorAll(".line"));
   var titleCurrent = title.querySelector(".hero-title-current");
-  var titleNext = title.querySelector(".hero-title-next");
   var heroSub = hero.querySelector(".hero-sub");
   var heroCta = hero.querySelector(".hero-cta");
   var heroCtas = Array.prototype.slice.call(heroCta.querySelectorAll(".btn"));
@@ -27,6 +26,9 @@
   var portal = document.querySelector("[data-intro-portal]");
   var expansion = document.querySelector("[data-intro-expansion]");
   var introTimeline = null;
+  var heroTypewriterTimer = null;
+  var heroHeadlineIndex = 0;
+  var heroHeadlines = ["Creating Value", "Beyond Property"];
 
   var previousScrollRestoration = "scrollRestoration" in history ? history.scrollRestoration : null;
   if (intro && previousScrollRestoration !== null) history.scrollRestoration = "manual";
@@ -230,11 +232,42 @@
     statement.innerHTML = statement.textContent.trim().split(/\s+/).map(function (w) { return '<span class="w">' + w + "</span>"; }).join(" ");
   }
 
+  /* Change the hero promise automatically, independent of scroll position. */
+  function startHeroTypewriter(delay) {
+    if (!titleCurrent || reduce || heroTypewriterTimer) return;
+    titleCurrent.classList.add("is-typing");
+
+    function typeTo(target, position) {
+      titleCurrent.textContent = target.slice(0, position);
+      if (position < target.length) {
+        heroTypewriterTimer = window.setTimeout(function () { typeTo(target, position + 1); }, 105);
+        return;
+      }
+      heroHeadlineIndex = (heroHeadlineIndex + 1) % heroHeadlines.length;
+      heroTypewriterTimer = window.setTimeout(erase, 2600);
+    }
+
+    function erase() {
+      var value = titleCurrent.textContent;
+      if (value.length) {
+        titleCurrent.textContent = value.slice(0, -1);
+        heroTypewriterTimer = window.setTimeout(erase, 58);
+        return;
+      }
+      heroTypewriterTimer = window.setTimeout(function () {
+        typeTo(heroHeadlines[(heroHeadlineIndex + 1) % heroHeadlines.length], 1);
+      }, 280);
+    }
+
+    heroTypewriterTimer = window.setTimeout(erase, typeof delay === "number" ? delay : 1600);
+  }
+
   if (!window.gsap || !window.ScrollTrigger || !window.Lenis) {
     doc.classList.add("no-motion");
     if (intro) intro.remove();
     if (previousScrollRestoration !== null) history.scrollRestoration = previousScrollRestoration;
     window.addEventListener("scroll", function () { setHeader(window.scrollY); setStaticHeroReveal(); }, { passive: true });
+    startHeroTypewriter(1400);
     return;
   }
 
@@ -301,6 +334,7 @@
     if (intro) intro.remove();
     ScrollTrigger.getAll().forEach(function (trigger) { trigger.enable(false, true); });
     ScrollTrigger.refresh();
+    startHeroTypewriter(1500);
   }
 
   function runIntro() {
@@ -392,6 +426,7 @@
   } else {
     gsap.set(linesWrap, { display: "none" });
     lenis.start();
+    startHeroTypewriter(1400);
   }
 
   /* Keep the building as the hero's final scroll moment after the video was removed. */
@@ -399,10 +434,6 @@
   heroMotion.add({ desktop: "(min-width: 901px)", mobile: "(max-width: 900px)" }, function (ctx) {
     var desktop = ctx.conditions.desktop;
     var rise = function () { return -window.innerHeight * (desktop ? 0.5 : 0.48); };
-    var supportShift = function () {
-      var extraHeight = titleNext.getBoundingClientRect().height - titleCurrent.getBoundingClientRect().height;
-      return extraHeight > 1 ? extraHeight + 8 : 0;
-    };
 
     gsap.set(building, { transformOrigin: "50% 38%" });
 
@@ -419,11 +450,6 @@
       }
     })
       .to(scrollCue, { autoAlpha: 0, y: -12, duration: 0.22 }, 0)
-      .to(titleCurrent, { autoAlpha: 0, y: -20, filter: "blur(10px)", duration: 0.22, ease: "power2.in" }, 0.06)
-      .fromTo(titleNext, { autoAlpha: 0, y: 20, filter: "blur(10px)" }, {
-        autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.26, ease: "power2.out"
-      }, 0.22)
-      .to([heroSub, heroCta], { y: supportShift, duration: 0.3, ease: "power2.out" }, 0.2)
       .to(building, {
         y: rise,
         scale: desktop ? 1.2 : 1.13,
