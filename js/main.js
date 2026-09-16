@@ -6,14 +6,13 @@
   var header = document.querySelector("[data-header]");
   var intro = document.querySelector("[data-page-intro]");
   var hero = document.querySelector("[data-hero]");
-  var copy = hero.querySelector("[data-hero-copy]");
   var building = hero.querySelector("[data-hero-building]");
   var heroHaze = hero.querySelector(".hero-haze");
   var eyebrow = hero.querySelector(".hero-eyebrow");
   var title = hero.querySelector(".hero-title");
   var titleLines = Array.prototype.slice.call(title.querySelectorAll(".line"));
-  var heroReveal = hero.querySelector("[data-hero-reveal]");
-  var heroRevealWords = Array.prototype.slice.call(heroReveal.querySelectorAll(".hero-reveal-word"));
+  var titleCurrent = title.querySelector(".hero-title-current");
+  var titleNext = title.querySelector(".hero-title-next");
   var heroSub = hero.querySelector(".hero-sub");
   var heroCta = hero.querySelector(".hero-cta");
   var heroCtas = Array.prototype.slice.call(heroCta.querySelectorAll(".btn"));
@@ -352,7 +351,6 @@
   heroMotion.add({ desktop: "(min-width: 901px)", mobile: "(max-width: 900px)" }, function (ctx) {
     var desktop = ctx.conditions.desktop;
     var rise = function () { return -window.innerHeight * (desktop ? 0.34 : 0.2); };
-    var copyRise = function () { return -window.innerHeight * (desktop ? 0.07 : 0.045); };
 
     gsap.set(building, { transformOrigin: "50% 38%" });
 
@@ -369,15 +367,13 @@
       }
     })
       .to(scrollCue, { autoAlpha: 0, y: -12, duration: 0.22 }, 0)
+      .to(eyebrow, { autoAlpha: 0, y: -12, duration: 0.3 }, 0.12)
       .to(heroSub, { autoAlpha: 0, y: -18, duration: 0.32 }, 0)
       .to(heroCta, { autoAlpha: 0, y: -16, duration: 0.32 }, 0)
-      .to(copy, { autoAlpha: 0, y: copyRise, scale: 0.94, duration: 0.66 }, 0.2)
-      .fromTo(heroReveal, { autoAlpha: 0, y: 65, scale: 0.88 }, {
-        autoAlpha: 1, y: 0, scale: 1, duration: 0.48, ease: "power2.out"
-      }, 0.35)
-      .fromTo(heroRevealWords, { autoAlpha: 0, yPercent: 90, filter: "blur(12px)" }, {
-        autoAlpha: 1, yPercent: 0, filter: "blur(0px)", stagger: 0.08, duration: 0.42, ease: "power3.out"
-      }, 0.38)
+      .to(titleCurrent, { autoAlpha: 0, y: -20, filter: "blur(10px)", duration: 0.32, ease: "power2.in" }, 0.25)
+      .fromTo(titleNext, { autoAlpha: 0, y: 20, filter: "blur(10px)" }, {
+        autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.38, ease: "power2.out"
+      }, 0.43)
       .to(building, {
         y: rise,
         scale: desktop ? 1.16 : 1.1,
