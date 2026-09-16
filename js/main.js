@@ -12,6 +12,8 @@
   var eyebrow = hero.querySelector(".hero-eyebrow");
   var title = hero.querySelector(".hero-title");
   var titleLines = Array.prototype.slice.call(title.querySelectorAll(".line"));
+  var heroReveal = hero.querySelector("[data-hero-reveal]");
+  var heroRevealWords = Array.prototype.slice.call(heroReveal.querySelectorAll(".hero-reveal-word"));
   var heroSub = hero.querySelector(".hero-sub");
   var heroCta = hero.querySelector(".hero-cta");
   var heroCtas = Array.prototype.slice.call(heroCta.querySelectorAll(".btn"));
@@ -185,8 +187,12 @@
     doc.classList.add("no-motion");
     if (intro) intro.remove();
     if (previousScrollRestoration !== null) history.scrollRestoration = previousScrollRestoration;
-    window.addEventListener("scroll", function () { setHeader(window.scrollY); }, { passive: true });
+    window.addEventListener("scroll", function () { setHeader(window.scrollY); setStaticHeroReveal(); }, { passive: true });
     return;
+  }
+
+  function setStaticHeroReveal() {
+    hero.classList.toggle("is-revealed", window.scrollY > hero.offsetHeight * 0.18);
   }
 
   if (reduce) {
@@ -205,7 +211,7 @@
           doc.classList.remove("intro-active");
           if (intro) intro.remove();
           if (previousScrollRestoration !== null) history.scrollRestoration = previousScrollRestoration;
-          window.addEventListener("scroll", function () { setHeader(window.scrollY); }, { passive: true });
+          window.addEventListener("scroll", function () { setHeader(window.scrollY); setStaticHeroReveal(); }, { passive: true });
         }
       })
         .to(lines, { strokeDashoffset: 0, duration: 0.24, stagger: 0.012 })
@@ -366,6 +372,12 @@
       .to(heroSub, { autoAlpha: 0, y: -18, duration: 0.32 }, 0)
       .to(heroCta, { autoAlpha: 0, y: -16, duration: 0.32 }, 0)
       .to(copy, { autoAlpha: 0, y: copyRise, scale: 0.94, duration: 0.66 }, 0.2)
+      .fromTo(heroReveal, { autoAlpha: 0, y: 65, scale: 0.88 }, {
+        autoAlpha: 1, y: 0, scale: 1, duration: 0.48, ease: "power2.out"
+      }, 0.35)
+      .fromTo(heroRevealWords, { autoAlpha: 0, yPercent: 90, filter: "blur(12px)" }, {
+        autoAlpha: 1, yPercent: 0, filter: "blur(0px)", stagger: 0.08, duration: 0.42, ease: "power3.out"
+      }, 0.38)
       .to(building, {
         y: rise,
         scale: desktop ? 1.16 : 1.1,
