@@ -88,6 +88,52 @@
       document.querySelectorAll("[data-seg]").forEach(function (o) { o.setAttribute("aria-pressed", String(o === b)); });
     });
   });
+
+  /* expandable facilities and amenities filters */
+  var propertySearch = document.querySelector("[data-property-search]");
+  var moreFiltersToggle = document.querySelector("[data-more-filters-toggle]");
+  var moreFilters = document.querySelector("[data-more-filters]");
+  var filterApply = document.querySelector("[data-filter-apply]");
+  var filterClear = document.querySelector("[data-filter-clear]");
+  function setMoreFilters(open) {
+    if (!moreFilters || !moreFiltersToggle) return;
+    moreFilters.hidden = !open;
+    moreFiltersToggle.setAttribute("aria-expanded", String(open));
+  }
+  function updateFilterCount() {
+    if (!moreFilters || !moreFiltersToggle) return;
+    var count = moreFilters.querySelectorAll('input[name="amenity"]:checked').length;
+    moreFiltersToggle.querySelector("span").textContent = count ? "+ More Filters (" + count + ")" : "+ More Filters";
+  }
+  if (moreFiltersToggle && moreFilters) {
+    moreFiltersToggle.addEventListener("click", function () {
+      setMoreFilters(moreFiltersToggle.getAttribute("aria-expanded") !== "true");
+    });
+    if (filterApply) filterApply.addEventListener("click", function () {
+      updateFilterCount();
+      setMoreFilters(false);
+      moreFiltersToggle.focus();
+    });
+    if (filterClear) filterClear.addEventListener("click", function () {
+      moreFilters.querySelectorAll('input[name="amenity"]').forEach(function (input) { input.checked = false; });
+      updateFilterCount();
+    });
+    document.addEventListener("click", function (event) {
+      if (!moreFilters.hidden && !event.target.closest(".search-shell")) setMoreFilters(false);
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && !moreFilters.hidden) {
+        setMoreFilters(false);
+        moreFiltersToggle.focus();
+      }
+    });
+  }
+  if (propertySearch) propertySearch.addEventListener("submit", function (event) {
+    event.preventDefault();
+    updateFilterCount();
+    setMoreFilters(false);
+  });
+
   document.querySelectorAll(".fav").forEach(function (b) {
     b.setAttribute("aria-pressed", "false");
     b.addEventListener("click", function () {

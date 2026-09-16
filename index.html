@@ -11,7 +11,7 @@
 <link rel="preload" href="assets/img/hero-building-rooftop-1536.webp" as="image" type="image/webp" media="(min-width: 901px)">
 <link rel="stylesheet" href="assets/fonts/fonts.css">
 <link rel="stylesheet" href="assets/vendor/leaflet.min.css">
-<link rel="stylesheet" href="css/style.css?v=20260916n">
+<link rel="stylesheet" href="css/style.css?v=20260916o">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -171,7 +171,8 @@
     </div>
   </div>
   <div class="wrap">
-    <form class="search" role="search" aria-label="Property search" onsubmit="return false">
+    <div class="search-shell">
+    <form class="search" role="search" aria-label="Property search" data-property-search>
       <div class="seg" role="group" aria-label="Buy or lease">
         <button type="button" class="seg-btn" aria-pressed="false" data-seg>Buy</button>
         <button type="button" class="seg-btn" aria-pressed="true" data-seg>Lease</button>
@@ -184,8 +185,25 @@
         <select id="f-beds"><option>Any</option><option>1</option><option>2</option><option>3</option><option>4+</option></select></label>
       <label class="field"><span>Budget</span>
         <select id="f-budget"><option>Any budget</option><option>Up to AED 120,000</option><option>AED 120,000 to 200,000</option><option>AED 200,000+</option></select></label>
+      <button class="more-filters-toggle" type="button" aria-expanded="false" aria-controls="more-filters" data-more-filters-toggle><span>+ More Filters</span><small>Facilities &amp; Amenities</small></button>
       <button class="btn btn-navy search-go" type="submit">Search Properties <i class="arr" aria-hidden="true"></i></button>
     </form>
+    <div class="more-filters" id="more-filters" data-more-filters hidden>
+      <h3>Facilities &amp; Amenities</h3>
+      <div class="amenities-grid">
+        <label><input type="checkbox" name="amenity" value="parking"> <span>Parking</span></label>
+        <label><input type="checkbox" name="amenity" value="balcony"> <span>Balcony</span></label>
+        <label><input type="checkbox" name="amenity" value="pool"> <span>Swimming Pool</span></label>
+        <label><input type="checkbox" name="amenity" value="gym"> <span>Gym</span></label>
+        <label><input type="checkbox" name="amenity" value="security"> <span>24/7 Security</span></label>
+        <label><input type="checkbox" name="amenity" value="pet-friendly"> <span>Pet Friendly</span></label>
+      </div>
+      <div class="more-filters-actions">
+        <button class="filter-clear" type="button" data-filter-clear>Clear</button>
+        <button class="btn btn-navy filter-apply" type="button" data-filter-apply>Apply Filters</button>
+      </div>
+    </div>
+    </div>
 
     <div class="results-bar">
       <p><b>Available now</b> at Qaryat Al Hidd, Saadiyat Island</p>
@@ -463,6 +481,6 @@
 <script src="assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="assets/vendor/lenis.min.js" defer></script>
 <script src="assets/vendor/leaflet.min.js" defer></script>
-<script src="js/main.js?v=20260916p" defer></script>
+<script src="js/main.js?v=20260916q" defer></script>
 </body>
 </html>
