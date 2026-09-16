@@ -122,11 +122,11 @@ h1,h2,h3,h4,.svc-word,.facts b,.stats dd,.intent span{font-family:var(--font-hea
 .hero-sky{position:absolute;inset:0;background:
   radial-gradient(120% 60% at 18% 8%,rgba(255,255,255,.45),transparent 60%),
   linear-gradient(180deg,var(--sky-top) 0%,var(--navy-18) 30%,var(--sky-mid) 58%,var(--haze) 100%)}
-.hero-copy{position:absolute;left:0;right:0;top:calc(var(--header) + 7vh);text-align:center;padding-inline:var(--gutter);z-index:5;transform-origin:50% 30%}
+.hero-copy{position:absolute;left:0;right:0;top:calc(var(--header) + 7vh);text-align:center;padding-inline:var(--gutter);z-index:2;transform-origin:50% 30%}
 .hero-title{position:relative;max-width:var(--measure-display);margin-inline:auto;font-size:var(--type-h1);font-weight:600;line-height:var(--leading-display);letter-spacing:var(--tracking-display);color:var(--navy);text-wrap:balance}
 .hero-title .line{display:block}
 .hero-title-next{position:absolute;inset:0 0 auto;opacity:0;visibility:hidden;text-shadow:0 3px 34px rgba(240,249,255,.75)}
-.no-motion .hero.is-revealed .hero-title-current,.no-motion .hero.is-revealed .hero-eyebrow,.no-motion .hero.is-revealed .hero-sub,.no-motion .hero.is-revealed .hero-cta{visibility:hidden}
+.no-motion .hero.is-revealed .hero-title-current{visibility:hidden}
 .no-motion .hero.is-revealed .hero-title-next{opacity:1;visibility:visible}
 .hero-sub{max-width:var(--measure-copy);margin:26px auto 0;font-size:var(--type-body-lg);line-height:1.5;color:var(--slate)}
 .hero-sub strong{font-weight:600;color:var(--ink)}

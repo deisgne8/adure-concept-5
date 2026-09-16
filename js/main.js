@@ -6,6 +6,7 @@
   var header = document.querySelector("[data-header]");
   var intro = document.querySelector("[data-page-intro]");
   var hero = document.querySelector("[data-hero]");
+  var copy = hero.querySelector("[data-hero-copy]");
   var building = hero.querySelector("[data-hero-building]");
   var heroHaze = hero.querySelector(".hero-haze");
   var eyebrow = hero.querySelector(".hero-eyebrow");
@@ -350,7 +351,11 @@
   var heroMotion = gsap.matchMedia();
   heroMotion.add({ desktop: "(min-width: 901px)", mobile: "(max-width: 900px)" }, function (ctx) {
     var desktop = ctx.conditions.desktop;
-    var rise = function () { return -window.innerHeight * (desktop ? 0.34 : 0.2); };
+    var rise = function () { return -window.innerHeight * (desktop ? 0.5 : 0.48); };
+    var supportShift = function () {
+      var extraHeight = titleNext.getBoundingClientRect().height - titleCurrent.getBoundingClientRect().height;
+      return extraHeight > 1 ? extraHeight + 8 : 0;
+    };
 
     gsap.set(building, { transformOrigin: "50% 38%" });
 
@@ -359,7 +364,7 @@
       scrollTrigger: {
         trigger: hero,
         start: "top top",
-        end: function () { return "+=" + window.innerHeight * (desktop ? 1.05 : 0.75); },
+        end: function () { return "+=" + window.innerHeight * (desktop ? 1.2 : 1); },
         scrub: 0.7,
         pin: true,
         anticipatePin: 1,
@@ -367,20 +372,19 @@
       }
     })
       .to(scrollCue, { autoAlpha: 0, y: -12, duration: 0.22 }, 0)
-      .to(eyebrow, { autoAlpha: 0, y: -12, duration: 0.3 }, 0.12)
-      .to(heroSub, { autoAlpha: 0, y: -18, duration: 0.32 }, 0)
-      .to(heroCta, { autoAlpha: 0, y: -16, duration: 0.32 }, 0)
-      .to(titleCurrent, { autoAlpha: 0, y: -20, filter: "blur(10px)", duration: 0.32, ease: "power2.in" }, 0.25)
+      .to(titleCurrent, { autoAlpha: 0, y: -20, filter: "blur(10px)", duration: 0.22, ease: "power2.in" }, 0.06)
       .fromTo(titleNext, { autoAlpha: 0, y: 20, filter: "blur(10px)" }, {
-        autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.38, ease: "power2.out"
-      }, 0.43)
+        autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.26, ease: "power2.out"
+      }, 0.22)
+      .to([heroSub, heroCta], { y: supportShift, duration: 0.3, ease: "power2.out" }, 0.2)
       .to(building, {
         y: rise,
-        scale: desktop ? 1.16 : 1.1,
-        duration: 1,
+        scale: desktop ? 1.2 : 1.13,
+        duration: 0.68,
         ease: "power1.inOut"
-      }, 0)
-      .to(heroHaze, { scaleY: 1.06, transformOrigin: "50% 100%", duration: 1 }, 0);
+      }, 0.52)
+      .to(copy, { autoAlpha: 0, duration: 0.18 }, 1.02)
+      .to(heroHaze, { scaleY: 1.06, transformOrigin: "50% 100%", duration: 0.68 }, 0.52);
   });
 
   /* ---------- 02 statement words darken as they are read ---------- */
