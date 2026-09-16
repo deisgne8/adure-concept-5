@@ -20,6 +20,7 @@
   var introLogo = document.querySelector("[data-intro-logo]");
   var introLogoEmblem = document.querySelector("[data-intro-logo-emblem]");
   var introLogoWord = document.querySelector("[data-intro-logo-word]");
+  var introLogoLetters = introLogoWord ? Array.prototype.slice.call(introLogoWord.querySelectorAll(".intro-logo-letter")) : [];
   var lines = linesWrap ? Array.prototype.slice.call(linesWrap.querySelectorAll(".ln")) : [];
   var portal = document.querySelector("[data-intro-portal]");
   var expansion = document.querySelector("[data-intro-expansion]");
@@ -250,7 +251,7 @@
   }
 
   function runIntro() {
-    if (!intro || !portal || !expansion || !linesWrap || !introLogo || !introLogoEmblem || !introLogoWord) return;
+    if (!intro || !portal || !expansion || !linesWrap || !introLogo || !introLogoEmblem || introLogoLetters.length !== 5) return;
     if (introTimeline) introTimeline.kill();
     lenis.stop();
     lenis.scrollTo(0, { immediate: true, force: true });
@@ -268,7 +269,7 @@
     gsap.set(linesWrap, { display: "block", autoAlpha: 1, scale: 1 });
     gsap.set(introLogo, { autoAlpha: 0, scale: 1 });
     gsap.set(introLogoEmblem, { autoAlpha: 0 });
-    gsap.set(introLogoWord, { clipPath: "inset(83% 100% 0 0)" });
+    gsap.set(introLogoLetters, { autoAlpha: 0, y: 8 });
     var initialSize = linesWrap.getBoundingClientRect().width * (84 / 87);
     var outlineScale = endSize / initialSize;
     gsap.set(lines, { autoAlpha: 1 });
@@ -301,8 +302,8 @@
       .set(introLogo, { autoAlpha: 1 }, "emblemComplete")
       .to(introLogoEmblem, { autoAlpha: 1, duration: 0.3, ease: "power2.out" }, "emblemComplete")
       .to(linesWrap, { autoAlpha: 0, duration: 0.3, ease: "power2.out" }, "emblemComplete")
-      .to(introLogoWord, { clipPath: "inset(83% 0 0 0)", duration: 0.42, ease: "power2.out" }, "emblemComplete+=0.32")
-      .addLabel("open", 2.85)
+      .to(introLogoLetters, { autoAlpha: 1, y: 0, duration: 0.26, stagger: 0.095, ease: "power3.out" }, "emblemComplete+=0.32")
+      .addLabel("open", 3.15)
       .set(linesWrap, { display: "none" }, "open")
       .set(portal, { autoAlpha: 1 }, "open")
       .set(expansion, { autoAlpha: 1, clipPath: "circle(0 at 50% 50%)" }, "open+=0.24")
@@ -318,7 +319,7 @@
       .to(portal, { autoAlpha: 0, duration: 0.45, ease: "power2.out" }, "open+=0.7")
       .to(expansion, { autoAlpha: 0, duration: 0.2, ease: "none" }, "open+=1.2")
       .to(intro, { autoAlpha: 0, duration: 0.15, ease: "none" }, "open+=1.3")
-      .addLabel("heroVisible", 4.3)
+      .addLabel("heroVisible", 4.6)
       .set(intro, { pointerEvents: "none" }, "heroVisible")
       .to(header, { autoAlpha: 1, y: 0, duration: 0.48, ease: "power3.out" }, "heroVisible+=0.12")
       .to(eyebrow, { autoAlpha: 1, y: 0, duration: 0.42, ease: "power3.out" }, "heroVisible+=0.6")
