@@ -217,7 +217,8 @@
         "Property location: " + details.get("location"),
         "Property type: " + details.get("type"),
         "Name: " + details.get("name"),
-        "Phone / Email: " + details.get("contact")
+        "Phone: " + details.get("phone"),
+        "Email: " + details.get("email")
       ].join("\n");
       window.location.href = "mailto:Inquiries@adu-re.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
     });
