@@ -72,6 +72,7 @@ h1,h2,h3,h4,.svc-word,.facts b,.stats dd,.intent span{font-family:var(--font-hea
 .label-light{color:rgba(255,255,255,.7)}
 .h-display{max-width:var(--measure-heading);font-size:var(--type-h2);font-weight:500;line-height:var(--leading-heading);letter-spacing:var(--tracking-heading);color:var(--navy);text-wrap:balance}
 .h-display-sm{font-size:var(--type-h3);font-weight:500;line-height:var(--leading-subheading);letter-spacing:var(--tracking-heading);color:var(--navy);text-wrap:balance}
+.h-display .mute,.h-display .mute-light,.h-display-sm .mute{color:inherit}
 .lede{max-width:var(--measure-copy);margin-top:22px;font-size:var(--type-body-lg);line-height:1.55;color:var(--slate)}
 
 /* buttons */
@@ -165,7 +166,7 @@ h1,h2,h3,h4,.svc-word,.facts b,.stats dd,.intent span{font-family:var(--font-hea
 .services{background:var(--deep);color:#fff;padding-top:clamp(100px,11vw,160px)}
 .services-head{display:block;text-align:left;padding-bottom:clamp(56px,6vw,90px)}
 .services .h-display{color:#fff}
-.services .h-display .mute{color:rgba(255,255,255,.45)}
+.services .h-display .mute{color:inherit}
 .services-head .lede{color:rgba(255,255,255,.76)}
 .section-cta{margin-top:30px}
 .svc{border-top:1px solid var(--deep-line)}
