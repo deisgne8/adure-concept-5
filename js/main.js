@@ -18,6 +18,8 @@
   var scrollCue = hero.querySelector(".scroll-cue");
   var linesWrap = document.querySelector("[data-hero-lines]");
   var introLogo = document.querySelector("[data-intro-logo]");
+  var introLogoEmblem = document.querySelector("[data-intro-logo-emblem]");
+  var introLogoWord = document.querySelector("[data-intro-logo-word]");
   var lines = linesWrap ? Array.prototype.slice.call(linesWrap.querySelectorAll(".ln")) : [];
   var portal = document.querySelector("[data-intro-portal]");
   var expansion = document.querySelector("[data-intro-expansion]");
@@ -54,7 +56,7 @@
     return Promise.all([
       fontsReady,
       preloadImage("assets/logo/emblem-mask.svg"),
-      preloadImage("assets/logo/adure-logo-acronym.svg"),
+      preloadImage("assets/logo/adure-logo-acronym.svg?v=20260916g"),
       preloadImage(heroImage)
     ]);
   }
@@ -248,7 +250,7 @@
   }
 
   function runIntro() {
-    if (!intro || !portal || !expansion || !linesWrap || !introLogo) return;
+    if (!intro || !portal || !expansion || !linesWrap || !introLogo || !introLogoEmblem || !introLogoWord) return;
     if (introTimeline) introTimeline.kill();
     lenis.stop();
     lenis.scrollTo(0, { immediate: true, force: true });
@@ -265,6 +267,8 @@
     gsap.set(intro, { display: "grid", autoAlpha: 1, pointerEvents: "auto" });
     gsap.set(linesWrap, { display: "block", autoAlpha: 1, scale: 1 });
     gsap.set(introLogo, { autoAlpha: 0, scale: 1 });
+    gsap.set(introLogoEmblem, { autoAlpha: 0 });
+    gsap.set(introLogoWord, { clipPath: "inset(83% 100% 0 0)" });
     var initialSize = linesWrap.getBoundingClientRect().width * (84 / 87);
     var outlineScale = endSize / initialSize;
     gsap.set(lines, { autoAlpha: 1 });
@@ -293,12 +297,14 @@
       .addLabel("draw", 0.2)
       .to(outerLines, { strokeDashoffset: 0, duration: 0.92, stagger: 0.11, ease: "power2.inOut" }, "draw")
       .to(innerLines, { strokeDashoffset: 0, duration: 0.84, stagger: 0.05, ease: "power3.inOut" }, "draw+=0.24")
-      .to(portal, { autoAlpha: 1, duration: 0.72, ease: "power2.out" }, "draw+=0.48")
-      .addLabel("emblemComplete", 1.7)
-      .to(introLogo, { autoAlpha: 1, duration: 0.35, ease: "power2.out" }, "emblemComplete")
-      .to(linesWrap, { autoAlpha: 0, duration: 0.25, ease: "power2.out" }, "emblemComplete")
-      .to({}, { duration: 0.55 }, "emblemComplete")
-      .addLabel("open", 2.25)
+      .addLabel("emblemComplete", 1.82)
+      .set(introLogo, { autoAlpha: 1 }, "emblemComplete")
+      .to(introLogoEmblem, { autoAlpha: 1, duration: 0.3, ease: "power2.out" }, "emblemComplete")
+      .to(linesWrap, { autoAlpha: 0, duration: 0.3, ease: "power2.out" }, "emblemComplete")
+      .to(introLogoWord, { clipPath: "inset(83% 0 0 0)", duration: 0.42, ease: "power2.out" }, "emblemComplete+=0.32")
+      .addLabel("open", 2.85)
+      .set(linesWrap, { display: "none" }, "open")
+      .set(portal, { autoAlpha: 1 }, "open")
       .set(expansion, { autoAlpha: 1, clipPath: "circle(0 at 50% 50%)" }, "open+=0.24")
       .to(expansion, { clipPath: "circle(120vmax at 50% 50%)", duration: 1.01, ease: "power4.inOut" }, "open+=0.24")
       .to(portal, {
@@ -307,12 +313,12 @@
         duration: 1.2,
         ease: "power4.inOut"
       }, "open")
-      .to(linesWrap, { scale: outlineScale, autoAlpha: 0, duration: 1.2, ease: "power4.inOut" }, "open")
-      .to(introLogo, { scale: outlineScale, autoAlpha: 0, duration: 1.2, ease: "power4.inOut" }, "open")
+      .to(introLogo, { scale: outlineScale, duration: 1.2, ease: "power4.inOut" }, "open")
+      .to(introLogo, { autoAlpha: 0, duration: 0.45, ease: "power2.in" }, "open+=0.35")
       .to(portal, { autoAlpha: 0, duration: 0.45, ease: "power2.out" }, "open+=0.7")
       .to(expansion, { autoAlpha: 0, duration: 0.2, ease: "none" }, "open+=1.2")
       .to(intro, { autoAlpha: 0, duration: 0.15, ease: "none" }, "open+=1.3")
-      .addLabel("heroVisible", 3.7)
+      .addLabel("heroVisible", 4.3)
       .set(intro, { pointerEvents: "none" }, "heroVisible")
       .to(header, { autoAlpha: 1, y: 0, duration: 0.48, ease: "power3.out" }, "heroVisible+=0.12")
       .to(eyebrow, { autoAlpha: 1, y: 0, duration: 0.42, ease: "power3.out" }, "heroVisible+=0.6")
