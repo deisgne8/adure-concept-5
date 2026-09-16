@@ -132,7 +132,7 @@ h1,h2,h3,h4,.svc-word,.facts b,.stats dd,.intent span{font-family:var(--font-hea
 .hero-sub strong{font-weight:600;color:var(--ink)}
 .hero-cta{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin-top:30px}
 .hero-building{position:absolute;left:50%;width:max(100vw,1500px);top:max(62vh,500px);transform:translateX(-50%);z-index:3;pointer-events:none;will-change:transform}
-.hero-building img{width:100%;height:auto;will-change:filter}
+.hero-building img{width:100%;height:auto;filter:brightness(.84) contrast(.9) saturate(.86);will-change:filter}
 .hero-haze{position:absolute;left:-10%;right:-10%;bottom:-2vh;height:36vh;z-index:4;pointer-events:none;background:
   radial-gradient(40% 70% at 12% 100%,rgba(240,244,248,.98),rgba(240,244,248,0) 70%),
   radial-gradient(38% 60% at 42% 104%,rgba(255,255,255,.96),rgba(255,255,255,0) 72%),
