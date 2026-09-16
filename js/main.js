@@ -148,6 +148,24 @@
     });
   });
 
+  /* Static-site enquiry: prepare an email without collecting form data on the site. */
+  var sellForm = document.querySelector("[data-sell-form]");
+  if (sellForm) {
+    sellForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      if (!sellForm.reportValidity()) return;
+      var details = new FormData(sellForm);
+      var subject = "Sell with ADURE — property enquiry";
+      var body = [
+        "Property location: " + details.get("location"),
+        "Property type: " + details.get("type"),
+        "Name: " + details.get("name"),
+        "Phone / Email: " + details.get("contact")
+      ].join("\n");
+      window.location.href = "mailto:Inquiries@adu-re.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+    });
+  }
+
   /* split the statement into words (used by the scroll reveal) */
   var statement = document.querySelector("[data-reveal-words]");
   if (statement) {

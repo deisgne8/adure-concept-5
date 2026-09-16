@@ -11,7 +11,7 @@
 <link rel="preload" href="assets/img/hero-building-rooftop-1536.webp" as="image" type="image/webp" media="(min-width: 901px)">
 <link rel="stylesheet" href="assets/fonts/fonts.css">
 <link rel="stylesheet" href="assets/vendor/leaflet.min.css">
-<link rel="stylesheet" href="css/style.css?v=20260916c">
+<link rel="stylesheet" href="css/style.css?v=20260916d">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -37,7 +37,7 @@
       <a href="#contact">Contact</a>
     </nav>
     <div class="header-actions">
-      <a class="btn btn-navy btn-sm" href="#contact">List Your Property</a>
+      <a class="btn btn-navy btn-sm" href="#sell">List Your Property</a>
       <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-btn><span></span><span></span><span class="sr">Menu</span></button>
     </div>
   </div>
@@ -49,7 +49,7 @@
       <a href="#customers">Our Customers</a>
       <a href="#contact">Contact</a>
     </nav>
-    <a class="btn btn-navy" href="#contact">List Your Property</a>
+    <a class="btn btn-navy" href="#sell">List Your Property</a>
     <p class="menu-meta">+971 2 645 7869 · Inquiries@adu-re.com</p>
   </div>
 </header>
@@ -123,7 +123,7 @@
       </a>
     </li>
     <li class="svc" data-svc>
-      <a href="#contact" class="svc-link">
+      <a href="#sell" class="svc-link">
         <span class="svc-media" aria-hidden="true"><img src="assets/img/svc-sell-1600.webp" alt="" loading="lazy" width="1600" height="1067"></span>
         <span class="wrap svc-row">
           <span class="svc-num">02</span>
@@ -250,7 +250,7 @@
       <p><strong>Own property in the UAE?</strong> <span class="mute">Let ADURE lease, sell or manage it for you.</span></p>
       <div class="owner-actions">
         <a class="btn btn-ghost" href="#properties">View All Properties</a>
-        <a class="btn btn-navy" href="#contact">List Your Property <i class="arr" aria-hidden="true"></i></a>
+        <a class="btn btn-navy" href="#sell">List Your Property <i class="arr" aria-hidden="true"></i></a>
       </div>
     </div>
   </div>
@@ -372,7 +372,41 @@
   </div>
 </section>
 
-<!-- 08 CUSTOMERS -->
+<!-- 08 SELL WITH ADURE -->
+<section class="sell" id="sell" aria-labelledby="sell-title">
+  <div class="wrap sell-layout">
+    <div class="sell-copy">
+      <h2 id="sell-title" class="h-display">Make the right move <span class="mute">to market</span></h2>
+      <p class="lede">From positioning and presentation to qualified enquiries, ADURE helps owners introduce their property to the market to make the right sale with clarity and confidence.</p>
+    </div>
+    <form class="sell-form" data-sell-form>
+      <div class="sell-fields">
+        <label for="sell-location">Property Location
+          <input id="sell-location" name="location" type="text" placeholder="City or community" required>
+        </label>
+        <label for="sell-type">Property Type
+          <select id="sell-type" name="type" required>
+            <option value="" disabled selected>Select property type</option>
+            <option>Residential</option>
+            <option>Retail</option>
+            <option>Commercial</option>
+            <option>Other</option>
+          </select>
+        </label>
+        <label for="sell-name">Name
+          <input id="sell-name" name="name" type="text" autocomplete="name" placeholder="Your name" required>
+        </label>
+        <label for="sell-contact">Phone / Email
+          <input id="sell-contact" name="contact" type="text" placeholder="Your phone or email" required>
+        </label>
+      </div>
+      <button class="btn btn-navy" type="submit">Discuss My Property <i class="arr" aria-hidden="true"></i></button>
+      <p class="sell-form-note">Opens an email draft with your property details.</p>
+    </form>
+  </div>
+</section>
+
+<!-- 09 CUSTOMERS -->
 <section class="customers" id="customers" aria-labelledby="customers-title">
   <div class="wrap grid-label customers-head">
     <div>
@@ -389,7 +423,7 @@
   </div>
 </section>
 
-<!-- 09 CONTACT -->
+<!-- 10 CONTACT -->
 <section class="contact" id="contact" aria-labelledby="contact-title">
   <div class="contact-media" aria-hidden="true"><img src="assets/img/contact-waterfront-canopies-2200.webp" alt="" loading="lazy" width="2200" height="1467"></div>
   <div class="wrap contact-inner">
@@ -397,7 +431,7 @@
     <p class="lede">Whether the next decision is to find, sell, lease or manage, ADURE brings the perspective and expertise to help you move with confidence.</p>
     <div class="intents">
       <a class="intent" href="#properties"><span>Find a Property</span><small>Explore available properties</small><i class="arr" aria-hidden="true"></i></a>
-      <a class="intent" href="#contact"><span>Sell Your Property</span><small>Bring your property to market</small><i class="arr" aria-hidden="true"></i></a>
+      <a class="intent" href="#sell"><span>Sell Your Property</span><small>Bring your property to market</small><i class="arr" aria-hidden="true"></i></a>
       <a class="intent" href="#management"><span>Property Management</span><small>Talk to our management team</small><i class="arr" aria-hidden="true"></i></a>
       <a class="intent" href="tel:+97126457869"><span>Contact ADURE</span><small>Speak with us</small><i class="arr" aria-hidden="true"></i></a>
     </div>
@@ -413,8 +447,8 @@
       <p>Beyond Property. Creating Value.</p>
     </div>
     <nav class="footer-col" aria-label="Company"><h4>Company</h4><a href="#customers">Our Customers</a><a href="#">Media &amp; Gallery</a><a href="#">Careers</a></nav>
-    <nav class="footer-col" aria-label="Services"><h4>Services</h4><a href="#services">Buy</a><a href="#services">Sell</a><a href="#services">Lease</a><a href="#management">Property Management</a></nav>
-    <nav class="footer-col" aria-label="Properties"><h4>Properties</h4><a href="#properties">Available Properties</a><a href="#contact">List Your Property</a><a href="#portfolio">Portfolio</a></nav>
+    <nav class="footer-col" aria-label="Services"><h4>Services</h4><a href="#services">Buy</a><a href="#sell">Sell</a><a href="#services">Lease</a><a href="#management">Property Management</a></nav>
+    <nav class="footer-col" aria-label="Properties"><h4>Properties</h4><a href="#properties">Available Properties</a><a href="#sell">List Your Property</a><a href="#portfolio">Portfolio</a></nav>
     <div class="footer-col"><h4>Contact</h4><a href="tel:+97126457869">+971 2 645 7869</a><a href="tel:+971566805125">+971 56 680 5125</a><a href="mailto:Inquiries@adu-re.com">Inquiries@adu-re.com</a><p>Abu Dhabi · Dubai · Al Ain</p></div>
   </div>
   <div class="wrap footer-base"><p>© 2026 Abu Dhabi United Real Estate</p><p><a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="#" lang="ar">العربية</a></p></div>
@@ -424,6 +458,6 @@
 <script src="assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="assets/vendor/lenis.min.js" defer></script>
 <script src="assets/vendor/leaflet.min.js" defer></script>
-<script src="js/main.js?v=20260916c" defer></script>
+<script src="js/main.js?v=20260916d" defer></script>
 </body>
 </html>
