@@ -17,6 +17,7 @@
   var heroCtas = Array.prototype.slice.call(heroCta.querySelectorAll(".btn"));
   var scrollCue = hero.querySelector(".scroll-cue");
   var linesWrap = document.querySelector("[data-hero-lines]");
+  var introLogo = document.querySelector("[data-intro-logo]");
   var lines = linesWrap ? Array.prototype.slice.call(linesWrap.querySelectorAll(".ln")) : [];
   var portal = document.querySelector("[data-intro-portal]");
   var expansion = document.querySelector("[data-intro-expansion]");
@@ -53,6 +54,7 @@
     return Promise.all([
       fontsReady,
       preloadImage("assets/logo/emblem-mask.svg"),
+      preloadImage("assets/logo/adure-logo-acronym.svg"),
       preloadImage(heroImage)
     ]);
   }
@@ -246,7 +248,7 @@
   }
 
   function runIntro() {
-    if (!intro || !portal || !expansion || !linesWrap) return;
+    if (!intro || !portal || !expansion || !linesWrap || !introLogo) return;
     if (introTimeline) introTimeline.kill();
     lenis.stop();
     lenis.scrollTo(0, { immediate: true, force: true });
@@ -262,6 +264,7 @@
 
     gsap.set(intro, { display: "grid", autoAlpha: 1, pointerEvents: "auto" });
     gsap.set(linesWrap, { display: "block", autoAlpha: 1, scale: 1 });
+    gsap.set(introLogo, { autoAlpha: 0, scale: 1 });
     var initialSize = linesWrap.getBoundingClientRect().width * (84 / 87);
     var outlineScale = endSize / initialSize;
     gsap.set(lines, { autoAlpha: 1 });
@@ -292,6 +295,8 @@
       .to(innerLines, { strokeDashoffset: 0, duration: 0.84, stagger: 0.05, ease: "power3.inOut" }, "draw+=0.24")
       .to(portal, { autoAlpha: 1, duration: 0.72, ease: "power2.out" }, "draw+=0.48")
       .addLabel("emblemComplete", 1.7)
+      .to(introLogo, { autoAlpha: 1, duration: 0.35, ease: "power2.out" }, "emblemComplete")
+      .to(linesWrap, { autoAlpha: 0, duration: 0.25, ease: "power2.out" }, "emblemComplete")
       .to({}, { duration: 0.55 }, "emblemComplete")
       .addLabel("open", 2.25)
       .set(expansion, { autoAlpha: 1, clipPath: "circle(0 at 50% 50%)" }, "open+=0.24")
@@ -303,6 +308,7 @@
         ease: "power4.inOut"
       }, "open")
       .to(linesWrap, { scale: outlineScale, autoAlpha: 0, duration: 1.2, ease: "power4.inOut" }, "open")
+      .to(introLogo, { scale: outlineScale, autoAlpha: 0, duration: 1.2, ease: "power4.inOut" }, "open")
       .to(portal, { autoAlpha: 0, duration: 0.45, ease: "power2.out" }, "open+=0.7")
       .to(expansion, { autoAlpha: 0, duration: 0.2, ease: "none" }, "open+=1.2")
       .to(intro, { autoAlpha: 0, duration: 0.15, ease: "none" }, "open+=1.3")
